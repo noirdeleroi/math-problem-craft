@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import MathRenderer from '../components/MathRenderer';
 
 // Add MathJax type definition
 declare global {
@@ -44,14 +45,15 @@ const Index = () => {
     // Set MathJax configuration
     window.MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
-        displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEnvironments: true,
         processEscapes: true,
         packages: ['base', 'ams', 'newcommand', 'require', 'autoload', 'configmacros'],
         tags: 'ams'
       },
       options: {
+        enableMathMenu: false,
         enableEnvironments: true,
         ignoreHtmlClass: 'tex2jax_ignore',
         processHtmlClass: 'tex2jax_process'
@@ -59,12 +61,22 @@ const Index = () => {
       loader: {
         load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
       },
+      startup: {
+        typeset: false
+      },
       svg: {
         fontCache: 'global'
       }
     };
 
     document.head.appendChild(script);
+
+    // Once MathJax is loaded, typeset any existing math
+    script.onload = () => {
+      if (window.MathJax && window.MathJax.typeset) {
+        window.MathJax.typeset();
+      }
+    };
 
     return () => {
       // Remove the script when component unmounts
@@ -162,6 +174,25 @@ const Index = () => {
     }
   };
 
+  useEffect(() => {
+    if (selectedProblemId) {
+      const problem = problems.find(p => p.question_id === selectedProblemId);
+      if (problem) {
+        // If there's a problem_image, check if it exists in our imageMap
+        if (problem.problem_image && imageMap[problem.problem_image]) {
+          setCurrentProblem({
+            ...problem,
+            problem_image: imageMap[problem.problem_image]
+          });
+        } else {
+          setCurrentProblem(problem);
+        }
+        setSelectedField(null);
+        setEditValue("");
+      }
+    }
+  }, [selectedProblemId, problems, imageMap]);
+
   const leftColumnFields: FieldKey[] = ['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text'];
   const middleColumnFields: FieldKey[] = ['code', 'difficulty', 'solutiontextexpanded', 'skills_for_steps'];
 
@@ -205,18 +236,18 @@ const Index = () => {
           
           {problems.length > 0 && (
             <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center space-x-2">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                <div className="flex items-center space-x-2 mb-4 sm:mb-0">
                   <Button 
                     onClick={navigateToPreviousProblem}
                     variant="outline"
                     disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
-                    className="mr-2"
+                    size="sm"
                   >
                     <ChevronLeft className="h-4 w-4" /> Previous
                   </Button>
                   
-                  <div className="w-64">
+                  <div className="w-48 sm:w-64">
                     <Select
                       value={selectedProblemId}
                       onValueChange={setSelectedProblemId}
@@ -243,7 +274,7 @@ const Index = () => {
                     onClick={navigateToNextProblem}
                     variant="outline"
                     disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
-                    className="ml-2"
+                    size="sm"
                   >
                     Next <ChevronRight className="h-4 w-4" />
                   </Button>
