@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/components/ui/use-toast';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Add MathJax type definition
 declare global {
@@ -28,17 +29,33 @@ const Index = () => {
   const [dataSource, setDataSource] = useState<'csv' | 'database' | null>(null);
 
   useEffect(() => {
-    // Add MathJax script
+    // Remove any existing MathJax script to avoid duplicates
+    const existingScript = document.getElementById('MathJax-script');
+    if (existingScript) {
+      document.head.removeChild(existingScript);
+    }
+
+    // Add MathJax script with enhanced configuration
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
     script.async = true;
     script.id = 'MathJax-script';
+    
+    // Enhanced configuration for better LaTeX support including environments
     script.setAttribute('config', `
       MathJax = {
         tex: {
           inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
           displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
-          processEscapes: true
+          processEscapes: true,
+          packages: ['base', 'ams', 'require'],
+          tags: 'ams'
+        },
+        options: {
+          enableEnvironments: true
+        },
+        loader: {
+          load: ['[tex]/ams']
         },
         svg: {
           fontCache: 'global'
@@ -124,6 +141,25 @@ const Index = () => {
     setImageMap(images);
   };
 
+  // Add navigation functions for Next and Previous problems
+  const navigateToNextProblem = () => {
+    if (!problems.length || !currentProblem) return;
+    
+    const currentIndex = problems.findIndex(p => p.question_id === selectedProblemId);
+    if (currentIndex < problems.length - 1) {
+      setSelectedProblemId(problems[currentIndex + 1].question_id);
+    }
+  };
+
+  const navigateToPreviousProblem = () => {
+    if (!problems.length || !currentProblem) return;
+    
+    const currentIndex = problems.findIndex(p => p.question_id === selectedProblemId);
+    if (currentIndex > 0) {
+      setSelectedProblemId(problems[currentIndex - 1].question_id);
+    }
+  };
+
   const leftColumnFields: FieldKey[] = ['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text'];
   const middleColumnFields: FieldKey[] = ['code', 'difficulty', 'solutiontextexpanded', 'skills_for_steps'];
 
@@ -166,34 +202,55 @@ const Index = () => {
           />
           
           {problems.length > 0 && (
-            <div className="mb-6 flex justify-between items-center">
-              <div className="w-64">
-                <Select
-                  value={selectedProblemId}
-                  onValueChange={setSelectedProblemId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a problem" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {problems.map((problem) => (
-                      // Ensure question_id is not empty and is a string
-                      problem.question_id && problem.question_id.trim() !== "" ? (
-                        <SelectItem 
-                          key={problem.question_id} 
-                          value={problem.question_id}
-                        >
-                          {problem.question_id}
-                        </SelectItem>
-                      ) : null
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <div className="w-64">
+                  <Select
+                    value={selectedProblemId}
+                    onValueChange={setSelectedProblemId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a problem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {problems.map((problem) => (
+                        // Ensure question_id is not empty and is a string
+                        problem.question_id && problem.question_id.trim() !== "" ? (
+                          <SelectItem 
+                            key={problem.question_id} 
+                            value={problem.question_id}
+                          >
+                            {problem.question_id}
+                          </SelectItem>
+                        ) : null
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Button onClick={handleExport}>
+                  Download CSV
+                </Button>
               </div>
               
-              <Button onClick={handleExport}>
-                Download CSV
-              </Button>
+              {currentProblem && (
+                <div className="flex justify-center space-x-4 mb-4">
+                  <Button 
+                    onClick={navigateToPreviousProblem}
+                    variant="outline"
+                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
+                  >
+                    <ChevronLeft className="mr-2 h-4 w-4" /> Previous Problem
+                  </Button>
+                  <Button 
+                    onClick={navigateToNextProblem}
+                    variant="outline"
+                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
+                  >
+                    Next Problem <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           )}
           

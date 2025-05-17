@@ -11,10 +11,16 @@ const MathRenderer = ({ text, className = '' }: MathRendererProps) => {
 
   useEffect(() => {
     if (containerRef.current && typeof window !== 'undefined') {
-      // MathJax is loaded via script tag in index.html
+      // MathJax is loaded via script tag in Index.tsx
       if (window.MathJax) {
-        window.MathJax.typesetClear([containerRef.current]);
-        window.MathJax.typesetPromise([containerRef.current]).catch((err) => console.error('MathJax error:', err));
+        try {
+          window.MathJax.typesetClear([containerRef.current]);
+          window.MathJax.typesetPromise([containerRef.current]).catch((err: any) => 
+            console.error('MathJax error:', err)
+          );
+        } catch (error) {
+          console.error('Error rendering math:', error);
+        }
       }
     }
   }, [text]);
