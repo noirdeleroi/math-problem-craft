@@ -110,9 +110,12 @@ const Index = () => {
   };
 
   const handleCSVUpload = (data: MathProblem[]) => {
-    setProblems(data);
-    if (data.length > 0) {
-      setSelectedProblemId(data[0].question_id);
+    // Filter out any problems with empty question_ids to prevent Select.Item errors
+    const validProblems = data.filter(problem => problem.question_id && problem.question_id.trim() !== "");
+    
+    setProblems(validProblems);
+    if (validProblems.length > 0) {
+      setSelectedProblemId(validProblems[0].question_id);
     }
     setDataSource('csv');
   };
@@ -174,9 +177,15 @@ const Index = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {problems.map((problem) => (
-                      <SelectItem key={problem.question_id} value={problem.question_id}>
-                        {problem.question_id}
-                      </SelectItem>
+                      // Ensure question_id is not empty and is a string
+                      problem.question_id && problem.question_id.trim() !== "" ? (
+                        <SelectItem 
+                          key={problem.question_id} 
+                          value={problem.question_id}
+                        >
+                          {problem.question_id}
+                        </SelectItem>
+                      ) : null
                     ))}
                   </SelectContent>
                 </Select>
