@@ -35,33 +35,35 @@ const Index = () => {
       document.head.removeChild(existingScript);
     }
 
-    // Add MathJax script with enhanced configuration
+    // Add MathJax script with proper configuration for environments
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
     script.async = true;
     script.id = 'MathJax-script';
     
-    // Enhanced configuration for better LaTeX support including environments
-    script.setAttribute('config', `
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
-          displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
-          processEscapes: true,
-          packages: ['base', 'ams', 'require'],
-          tags: 'ams'
-        },
-        options: {
-          enableEnvironments: true
-        },
-        loader: {
-          load: ['[tex]/ams']
-        },
-        svg: {
-          fontCache: 'global'
-        }
-      };
-    `);
+    // Set MathJax configuration
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+        displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+        processEnvironments: true,
+        processEscapes: true,
+        packages: ['base', 'ams', 'newcommand', 'require', 'autoload', 'configmacros'],
+        tags: 'ams'
+      },
+      options: {
+        enableEnvironments: true,
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      },
+      loader: {
+        load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+
     document.head.appendChild(script);
 
     return () => {
@@ -204,53 +206,53 @@ const Index = () => {
           {problems.length > 0 && (
             <div className="mb-6">
               <div className="flex justify-between items-center mb-4">
-                <div className="w-64">
-                  <Select
-                    value={selectedProblemId}
-                    onValueChange={setSelectedProblemId}
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    onClick={navigateToPreviousProblem}
+                    variant="outline"
+                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
+                    className="mr-2"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a problem" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {problems.map((problem) => (
-                        // Ensure question_id is not empty and is a string
-                        problem.question_id && problem.question_id.trim() !== "" ? (
-                          <SelectItem 
-                            key={problem.question_id} 
-                            value={problem.question_id}
-                          >
-                            {problem.question_id}
-                          </SelectItem>
-                        ) : null
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    <ChevronLeft className="h-4 w-4" /> Previous
+                  </Button>
+                  
+                  <div className="w-64">
+                    <Select
+                      value={selectedProblemId}
+                      onValueChange={setSelectedProblemId}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a problem" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {problems.map((problem) => (
+                          problem.question_id && problem.question_id.trim() !== "" ? (
+                            <SelectItem 
+                              key={problem.question_id} 
+                              value={problem.question_id}
+                            >
+                              {problem.question_id}
+                            </SelectItem>
+                          ) : null
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    onClick={navigateToNextProblem}
+                    variant="outline"
+                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
+                    className="ml-2"
+                  >
+                    Next <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
                 
                 <Button onClick={handleExport}>
                   Download CSV
                 </Button>
               </div>
-              
-              {currentProblem && (
-                <div className="flex justify-center space-x-4 mb-4">
-                  <Button 
-                    onClick={navigateToPreviousProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
-                  >
-                    <ChevronLeft className="mr-2 h-4 w-4" /> Previous Problem
-                  </Button>
-                  <Button 
-                    onClick={navigateToNextProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
-                  >
-                    Next Problem <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              )}
             </div>
           )}
           
