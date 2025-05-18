@@ -1,17 +1,13 @@
+
 import { useState, useEffect } from 'react';
 import { MathProblem, FieldKey } from '../types/mathProblem';
 import FileUploader from '../components/FileUploader';
-import Field from '../components/Field';
 import { exportCSV } from '../utils/csvUtils';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { Card } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
-import MathRenderer from '../components/MathRenderer';
 import { supabase } from '@/integrations/supabase/client';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import ProblemNavigation from '../components/ProblemNavigation';
+import ProblemViewer from '../components/ProblemViewer';
+import DataSourceSelector from '../components/DataSourceSelector';
 
 // Add MathJax type definition
 declare global {
@@ -78,8 +74,15 @@ const Index = () => {
           }
           
           if (data && data.length > 0) {
-            setProblems(data);
-            setSelectedProblemId(data[0].question_id);
+            // Convert numeric fields to strings to match MathProblem type
+            const formattedData: MathProblem[] = data.map(item => ({
+              ...item,
+              code: item.code?.toString() || "",
+              difficulty: item.difficulty?.toString() || ""
+            }));
+            
+            setProblems(formattedData);
+            setSelectedProblemId(formattedData[0].question_id);
           } else {
             toast({
               title: "No Problems Found",
@@ -254,61 +257,17 @@ const Index = () => {
     setImageMap(images);
   };
 
-  // Add navigation functions for Next and Previous problems
-  const navigateToNextProblem = () => {
-    if (!problems.length || !currentProblem) return;
-    
-    const currentIndex = problems.findIndex(p => p.question_id === selectedProblemId);
-    if (currentIndex < problems.length - 1) {
-      setSelectedProblemId(problems[currentIndex + 1].question_id);
-    }
-  };
-
-  const navigateToPreviousProblem = () => {
-    if (!problems.length || !currentProblem) return;
-    
-    const currentIndex = problems.findIndex(p => p.question_id === selectedProblemId);
-    if (currentIndex > 0) {
-      setSelectedProblemId(problems[currentIndex - 1].question_id);
-    }
-  };
-
-  const renderSourceSelection = () => (
-    <div className="mb-6">
-      <h2 className="text-xl font-bold mb-4">Choose Data Source</h2>
-      <div className="flex gap-4">
-        <Button 
-          variant={dataSource === 'csv' ? 'default' : 'outline'}
-          onClick={() => setDataSource('csv')}
-        >
-          Upload CSV
-        </Button>
-        <Button 
-          variant={dataSource === 'database' ? 'default' : 'outline'} 
-          onClick={() => setDataSource('database')}
-        >
-          Connect to Database
-        </Button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6">Math Problem Reviewer</h1>
       
-      {!dataSource && renderSourceSelection()}
-      
-      {dataSource === 'database' && !isSupabaseConnected && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Connection Error</AlertTitle>
-          <AlertDescription>
-            Unable to connect to Supabase database. Please make sure your project is properly connected to Supabase.
-            You can check your connection in the Supabase configuration file.
-          </AlertDescription>
-        </Alert>
-      )}
+      <DataSourceSelector 
+        dataSource={dataSource}
+        setDataSource={setDataSource}
+        isSupabaseConnected={isSupabaseConnected}
+        isCheckingConnection={isCheckingConnection}
+        problems={problems}
+      />
       
       {dataSource === 'csv' && (
         <>
@@ -318,258 +277,34 @@ const Index = () => {
           />
           
           {problems.length > 0 && (
-            <div className="mb-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                <div className="flex items-center space-x-2 mb-4 sm:mb-0">
-                  <Button 
-                    onClick={navigateToPreviousProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
-                    size="sm"
-                  >
-                    <ChevronLeft className="h-4 w-4" /> Previous
-                  </Button>
-                  
-                  <div className="w-48 sm:w-64">
-                    <Select
-                      value={selectedProblemId}
-                      onValueChange={setSelectedProblemId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a problem" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {problems.map((problem) => (
-                          problem.question_id && problem.question_id.trim() !== "" ? (
-                            <SelectItem 
-                              key={problem.question_id} 
-                              value={problem.question_id}
-                            >
-                              {problem.question_id}
-                            </SelectItem>
-                          ) : null
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button 
-                    onClick={navigateToNextProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
-                    size="sm"
-                  >
-                    Next <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <Button onClick={handleExport}>
-                  Download CSV
-                </Button>
-              </div>
-            </div>
-          )}
-          
-          {currentProblem ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Problem Details</h2>
-                {['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text'].map((field) => (
-                  <Field
-                    key={field}
-                    label={field as FieldKey}
-                    value={currentProblem[field as FieldKey] as string || ""}
-                    onFieldClick={(value) => handleFieldClick(field as FieldKey, value)}
-                  />
-                ))}
-              </Card>
-              
-              {/* Middle Column */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Additional Information</h2>
-                {['code', 'difficulty', 'solutiontextexpanded', 'skills_for_steps'].map((field) => (
-                  <Field
-                    key={field}
-                    label={field as FieldKey}
-                    value={currentProblem[field as FieldKey] as string || ""}
-                    onFieldClick={(value) => handleFieldClick(field as FieldKey, value)}
-                  />
-                ))}
-              </Card>
-              
-              {/* Right Column - Editor */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Edit Problem Text</h2>
-                {selectedField ? (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">
-                      Editing: {selectedField}
-                    </h3>
-                    <Textarea
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="min-h-[300px] font-mono"
-                    />
-                    <div className="mt-4">
-                      <Button onClick={handleSaveChanges}>
-                        Save Changes
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-gray-500">
-                    Click on any field from the left or middle panel to edit its content.
-                  </p>
-                )}
-              </Card>
-            </div>
-          ) : (
-            problems.length > 0 && (
-              <div className="text-center py-10">
-                <p>Please select a problem to review</p>
-              </div>
-            )
+            <ProblemNavigation
+              problems={problems}
+              selectedProblemId={selectedProblemId}
+              setSelectedProblemId={setSelectedProblemId}
+              handleExport={handleExport}
+            />
           )}
         </>
       )}
       
-      {dataSource === 'database' && isSupabaseConnected && (
-        <>
-          {problems.length > 0 && (
-            <div className="mb-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                <div className="flex items-center space-x-2 mb-4 sm:mb-0">
-                  <Button 
-                    onClick={navigateToPreviousProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === 0}
-                    size="sm"
-                  >
-                    <ChevronLeft className="h-4 w-4" /> Previous
-                  </Button>
-                  
-                  <div className="w-48 sm:w-64">
-                    <Select
-                      value={selectedProblemId}
-                      onValueChange={setSelectedProblemId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a problem" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {problems.map((problem) => (
-                          problem.question_id && problem.question_id.trim() !== "" ? (
-                            <SelectItem 
-                              key={problem.question_id} 
-                              value={problem.question_id}
-                            >
-                              {problem.question_id}
-                            </SelectItem>
-                          ) : null
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button 
-                    onClick={navigateToNextProblem}
-                    variant="outline"
-                    disabled={problems.findIndex(p => p.question_id === selectedProblemId) === problems.length - 1}
-                    size="sm"
-                  >
-                    Next <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <Button onClick={handleExport}>
-                  Download CSV
-                </Button>
-              </div>
-            </div>
-          )}
-          
-          {currentProblem ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Problem Details</h2>
-                {['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text'].map((field) => (
-                  <Field
-                    key={field}
-                    label={field as FieldKey}
-                    value={currentProblem[field as FieldKey] as string || ""}
-                    onFieldClick={(value) => handleFieldClick(field as FieldKey, value)}
-                  />
-                ))}
-              </Card>
-              
-              {/* Middle Column */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Additional Information</h2>
-                {['code', 'difficulty', 'solutiontextexpanded', 'skills_for_steps'].map((field) => (
-                  <Field
-                    key={field}
-                    label={field as FieldKey}
-                    value={currentProblem[field as FieldKey] as string || ""}
-                    onFieldClick={(value) => handleFieldClick(field as FieldKey, value)}
-                  />
-                ))}
-              </Card>
-              
-              {/* Right Column - Editor */}
-              <Card className="p-4">
-                <h2 className="text-xl font-bold mb-4">Edit Problem Text</h2>
-                {selectedField ? (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">
-                      Editing: {selectedField}
-                    </h3>
-                    <Textarea
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="min-h-[300px] font-mono"
-                    />
-                    <div className="mt-4">
-                      <Button onClick={handleSaveChanges}>
-                        Save Changes
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-gray-500">
-                    Click on any field from the left or middle panel to edit its content.
-                  </p>
-                )}
-              </Card>
-            </div>
-          ) : (
-            problems.length > 0 && (
-              <div className="text-center py-10">
-                <p>Please select a problem to review</p>
-              </div>
-            )
-          )}
-        </>
+      {dataSource === 'database' && isSupabaseConnected && problems.length > 0 && (
+        <ProblemNavigation
+          problems={problems}
+          selectedProblemId={selectedProblemId}
+          setSelectedProblemId={setSelectedProblemId}
+          handleExport={handleExport}
+        />
       )}
       
-      {problems.length === 0 && dataSource === 'csv' && (
-        <div className="text-center py-10">
-          <p>Please upload a CSV file to get started</p>
-        </div>
-      )}
-      
-      {problems.length === 0 && dataSource === 'database' && isSupabaseConnected && (
-        <div className="text-center py-10">
-          <p>No problems found in the database. You may need to add problems first.</p>
-        </div>
-      )}
-      
-      {isCheckingConnection && dataSource === 'database' && (
-        <div className="text-center py-10">
-          <p>Checking connection to database...</p>
-        </div>
-      )}
+      <ProblemViewer
+        currentProblem={currentProblem}
+        selectedField={selectedField}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        handleFieldClick={handleFieldClick}
+        handleSaveChanges={handleSaveChanges}
+        problems={problems}
+      />
     </div>
   );
 };
