@@ -33,7 +33,8 @@ const Index = () => {
     const checkSupabaseConnection = async () => {
       try {
         setIsCheckingConnection(true);
-        const { data, error } = await supabase.from('PS1').select('question_id').limit(1);
+        // Updated table name from 'PS1' to 'problems'
+        const { data, error } = await supabase.from('problems').select('question_id').limit(1);
         
         if (error) {
           console.error('Supabase connection error:', error);
@@ -60,8 +61,9 @@ const Index = () => {
     const fetchProblemsFromDatabase = async () => {
       if (dataSource === 'database' && isSupabaseConnected) {
         try {
+          // Updated table name from 'PS1' to 'problems'
           const { data, error } = await supabase
-            .from('PS1')
+            .from('problems')
             .select('*');
           
           if (error) {
@@ -196,8 +198,9 @@ const Index = () => {
     // If data source is database, update in Supabase
     if (dataSource === 'database' && isSupabaseConnected) {
       try {
+        // Updated table name from 'PS1' to 'problems'
         const { error } = await supabase
-          .from('PS1')
+          .from('problems')
           .update({ [selectedField]: editValue })
           .eq('question_id', currentProblem.question_id);
           

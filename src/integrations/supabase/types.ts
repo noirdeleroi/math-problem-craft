@@ -9,11 +9,11 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      PS1: {
+      problems: {
         Row: {
           answer: string | null
-          code: number | null
-          difficulty: number | null
+          code: string | null
+          difficulty: string | null
           problem_image: string | null
           problem_text: string
           question_id: string
@@ -23,8 +23,8 @@ export type Database = {
         }
         Insert: {
           answer?: string | null
-          code?: number | null
-          difficulty?: number | null
+          code?: string | null
+          difficulty?: string | null
           problem_image?: string | null
           problem_text: string
           question_id: string
@@ -34,8 +34,8 @@ export type Database = {
         }
         Update: {
           answer?: string | null
-          code?: number | null
-          difficulty?: number | null
+          code?: string | null
+          difficulty?: string | null
           problem_image?: string | null
           problem_text?: string
           question_id?: string
