@@ -5,6 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { parseCSV } from '../utils/csvUtils';
 import { MathProblem } from '../types/mathProblem';
 
+// This component is no longer used in the main UI but kept for reference
 interface FileUploaderProps {
   onCSVUpload: (data: MathProblem[]) => void;
   onImageUpload: (imageMap: Record<string, string>) => void;

@@ -1,30 +1,25 @@
 
 import { useState } from 'react';
 import { MathProblem } from '../types/mathProblem';
-import FileUploader from '../components/FileUploader';
 import { exportCSV } from '../utils/csvUtils';
 import ProblemNavigation from '../components/ProblemNavigation';
 import ProblemViewer from '../components/ProblemViewer';
 import ConnectionStatus from '../components/ConnectionStatus';
-import TableSelector from '../components/TableSelector';
-import { useSupabaseConnection } from '../hooks/useSupabaseConnection';
+import DataSourceSelector from '../components/DataSourceSelector';
 import { useMathJaxInitializer } from '../hooks/useMathJaxInitializer';
 import { useProblemManager } from '../hooks/useProblemManager';
+import { useSupabaseConnection } from '../hooks/useSupabaseConnection';
 
 const Index = () => {
   // Initialize MathJax
   useMathJaxInitializer();
   
-  // Handle Supabase connection and data fetching
+  // Handle Supabase connection and data fetching - directly connect to problems table
   const {
     isSupabaseConnected,
     isCheckingConnection,
-    availableTables,
-    selectedTable,
-    setSelectedTable,
     problems,
     setProblems,
-    fetchProblemsFromDatabase
   } = useSupabaseConnection();
 
   // Handle problem management
@@ -40,14 +35,6 @@ const Index = () => {
     handleToggleChecked,
     handleImageUpload,
   } = useProblemManager(problems);
-
-  // Handle file upload
-  const handleCSVUpload = (data: MathProblem[]) => {
-    setProblems(data);
-    if (data.length > 0 && data[0].question_id) {
-      setSelectedProblemId(data[0].question_id);
-    }
-  };
 
   // Handle export
   const handleExport = () => {
@@ -69,16 +56,10 @@ const Index = () => {
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6">Math Problem Reviewer</h1>
       
-      <TableSelector
-        availableTables={availableTables}
-        selectedTable={selectedTable}
-        setSelectedTable={setSelectedTable}
-        fetchProblemsFromDatabase={fetchProblemsFromDatabase}
-      />
-      
-      <FileUploader
-        onCSVUpload={handleCSVUpload}
-        onImageUpload={handleImageUpload}
+      <DataSourceSelector
+        isSupabaseConnected={isSupabaseConnected}
+        isCheckingConnection={isCheckingConnection}
+        problems={problems}
       />
       
       {problems.length > 0 && (
