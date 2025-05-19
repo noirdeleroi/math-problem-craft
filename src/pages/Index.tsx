@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { MathProblem, FieldKey } from '../types/mathProblem';
 import FileUploader from '../components/FileUploader';
@@ -33,7 +34,7 @@ const Index = () => {
       try {
         setIsCheckingConnection(true);
         
-        // We'll use a simpler approach to check connection - just query the problems table
+        // Use a simpler approach to check connection - just query the problems table
         const { data, error } = await supabase
           .from('problems')
           .select('question_id')
@@ -43,9 +44,9 @@ const Index = () => {
           console.error('Supabase connection error:', error);
           setIsSupabaseConnected(false);
         } else {
+          console.log('Supabase connection successful, got data:', data);
           setIsSupabaseConnected(true);
-          // For now, we'll just use a fixed list of available tables
-          // since we know 'problems' is the main table
+          // Fixed list of available tables
           setAvailableTables(['problems']);
           setSelectedTable('problems');
           fetchProblemsFromDatabase('problems');
@@ -65,12 +66,14 @@ const Index = () => {
   const fetchProblemsFromDatabase = async (tableName: string) => {
     if (isSupabaseConnected && tableName === 'problems') {
       try {
+        console.log('Fetching problems from database...');
         const { data, error } = await supabase
           .from('problems')
           .select('*')
           .order('question_id', { ascending: true });
         
         if (error) {
+          console.error('Error fetching problems:', error);
           toast({
             title: "Error Loading Problems",
             description: error.message,
@@ -79,6 +82,7 @@ const Index = () => {
           return;
         }
         
+        console.log('Got problems data:', data);
         if (data && data.length > 0) {
           // Convert numeric fields to strings to match MathProblem type
           const formattedData: MathProblem[] = data.map(item => ({
@@ -89,9 +93,11 @@ const Index = () => {
             corrected: Boolean(item.corrected)
           }));
           
+          console.log('Formatted data:', formattedData);
           setProblems(formattedData);
-          setSelectedProblemId(formattedData[0].question_id);
+          setSelectedProblemId(formattedData[0].question_id || "");
         } else {
+          console.log('No problems found');
           toast({
             title: "No Problems Found",
             description: "No problems were found in the database."
@@ -167,6 +173,7 @@ const Index = () => {
     if (selectedProblemId) {
       const problem = problems.find(p => p.question_id === selectedProblemId);
       if (problem) {
+        console.log('Selected problem:', problem);
         // If there's a problem_image, check if it exists in our imageMap
         if (problem.problem_image && imageMap[problem.problem_image]) {
           setCurrentProblem({
@@ -269,9 +276,10 @@ const Index = () => {
         const { error } = await supabase
           .from('problems')
           .update({ checked: newCheckedValue })
-          .eq('question_id', currentProblem.question_id);
+          .eq('question_id', currentProblem.question_id || "");
         
         if (error) {
+          console.error('Error updating checked status:', error);
           toast({
             title: "Update Failed",
             description: error.message,
@@ -339,7 +347,10 @@ const Index = () => {
           <label className="block text-sm font-medium mb-2">Select Table:</label>
           <select 
             value={selectedTable} 
-            onChange={(e) => setSelectedTable(e.target.value)}
+            onChange={(e) => {
+              setSelectedTable(e.target.value);
+              fetchProblemsFromDatabase(e.target.value);
+            }}
             className="border rounded-md py-2 px-4 w-full sm:w-auto"
           >
             {availableTables.map(table => (

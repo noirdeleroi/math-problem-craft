@@ -19,7 +19,7 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
             <div key={field} className="mb-4">
               <h3 className="text-sm font-medium text-gray-700 mb-1">problem_image</h3>
               <div 
-                className="p-3 rounded-md bg-lightGray hover:bg-hoverOrange hover:bg-opacity-10 transition-colors cursor-pointer"
+                className="p-3 rounded-md bg-gray-100 hover:bg-orange-100 hover:bg-opacity-10 transition-colors cursor-pointer"
                 onClick={() => onFieldClick('problem_image', currentProblem.problem_image || '')}
               >
                 {currentProblem.problem_image.split(',').map((image, index) => (
