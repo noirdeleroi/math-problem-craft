@@ -36,7 +36,7 @@ export type Database = {
           problem_image: string | null
           problem_number: number | null
           problem_text: string | null
-          question_id: string | null
+          question_id: string
           rec_time: string | null
           skills: string | null
           skills_for_step_1: string | null
@@ -101,7 +101,7 @@ export type Database = {
           problem_image?: string | null
           problem_number?: number | null
           problem_text?: string | null
-          question_id?: string | null
+          question_id: string
           rec_time?: string | null
           skills?: string | null
           skills_for_step_1?: string | null
@@ -166,7 +166,7 @@ export type Database = {
           problem_image?: string | null
           problem_number?: number | null
           problem_text?: string | null
-          question_id?: string | null
+          question_id?: string
           rec_time?: string | null
           skills?: string | null
           skills_for_step_1?: string | null
