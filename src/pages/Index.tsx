@@ -11,7 +11,7 @@ import { useProblemManager } from '../hooks/useProblemManager';
 import { useSupabaseConnection } from '../hooks/useSupabaseConnection';
 
 const Index = () => {
-  // Initialize MathJax
+  // Initialize KaTeX (using the same hook for backward compatibility)
   useMathJaxInitializer();
   
   // Handle Supabase connection and data fetching - directly connect to problems table

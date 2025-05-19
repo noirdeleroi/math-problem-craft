@@ -1,66 +1,20 @@
 
 import { useEffect } from 'react';
 
-// Add MathJax type definition
-declare global {
-  interface Window {
-    MathJax: any;
-  }
-}
-
+// This hook is kept for backward compatibility but now simply loads KaTeX CSS
 export function useMathJaxInitializer() {
   useEffect(() => {
-    // Remove any existing MathJax script to avoid duplicates
+    // Remove any existing MathJax script
     const existingScript = document.getElementById('MathJax-script');
     if (existingScript) {
       document.head.removeChild(existingScript);
     }
-
-    // Add MathJax script with proper configuration for environments
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-    script.async = true;
-    script.id = 'MathJax-script';
     
-    // Set MathJax configuration
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        processEnvironments: true,
-        processEscapes: true,
-        packages: ['base', 'ams', 'newcommand', 'require', 'autoload', 'configmacros'],
-        tags: 'ams'
-      },
-      options: {
-        processHtmlClass: 'tex2jax_process'
-      },
-      loader: {
-        load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
-      },
-      startup: {
-        typeset: false
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
-
-    document.head.appendChild(script);
-
-    // Once MathJax is loaded, typeset any existing math
-    script.onload = () => {
-      if (window.MathJax && window.MathJax.typeset) {
-        window.MathJax.typeset();
-      }
-    };
-
+    // We don't need to add any script here since KaTeX is loaded via npm
+    // and the CSS is imported in the MathRenderer component
+    
     return () => {
-      // Remove the script when component unmounts
-      const mathJaxScript = document.getElementById('MathJax-script');
-      if (mathJaxScript) {
-        document.head.removeChild(mathJaxScript);
-      }
+      // Cleanup function remains for consistency
     };
   }, []);
 }
