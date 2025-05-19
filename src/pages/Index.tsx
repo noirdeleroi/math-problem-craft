@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { MathProblem, FieldKey } from '../types/mathProblem';
 import FileUploader from '../components/FileUploader';
@@ -33,11 +32,8 @@ const Index = () => {
     const checkSupabaseConnection = async () => {
       try {
         setIsCheckingConnection(true);
-        // Get available tables - using a different approach that doesn't use _tables
-        // which doesn't exist in standard Supabase setup
-        const { data: schemas } = await supabase.rpc('get_schemas', {});
         
-        // We'll use a simple approach - if we can query the problems table, we assume connection works
+        // We'll use a simpler approach to check connection - just query the problems table
         const { data, error } = await supabase
           .from('problems')
           .select('question_id')
