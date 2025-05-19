@@ -7,7 +7,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ProblemNavigation from '../components/ProblemNavigation';
 import ProblemViewer from '../components/ProblemViewer';
-import DataSourceSelector from '../components/DataSourceSelector';
 
 // Add MathJax type definition
 declare global {
@@ -24,25 +23,48 @@ const Index = () => {
   const [selectedField, setSelectedField] = useState<FieldKey | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [imageMap, setImageMap] = useState<Record<string, string>>({});
-  const [dataSource, setDataSource] = useState<'csv' | 'database' | null>(null);
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
-  const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(false);
+  const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
+  const [selectedTable, setSelectedTable] = useState<string>("problems");
+  const [availableTables, setAvailableTables] = useState<string[]>([]);
 
+  // Automatically check Supabase connection on mount
   useEffect(() => {
-    // Check if Supabase is connected by making a simple query
     const checkSupabaseConnection = async () => {
       try {
         setIsCheckingConnection(true);
-        // Updated table name from 'PS1' to 'problems'
-        const { data, error } = await supabase.from('problems').select('question_id').limit(1);
+        // Get available tables
+        const { data: tablesData, error: tablesError } = await supabase
+          .from('_tables')
+          .select('name')
+          .not('name', 'ilike', 'pg_%')
+          .not('name', 'ilike', 'information_schema%');
+        
+        if (!tablesError && tablesData) {
+          const tables = tablesData.map(t => t.name).filter(name => 
+            !name.startsWith('_') && name !== 'schema_migrations'
+          );
+          setAvailableTables(tables);
+          if (tables.includes('problems')) {
+            setSelectedTable('problems');
+          } else if (tables.length > 0) {
+            setSelectedTable(tables[0]);
+          }
+        }
+        
+        // Check if we can access the problems table
+        const { data, error } = await supabase
+          .from(selectedTable)
+          .select('question_id')
+          .limit(1);
         
         if (error) {
           console.error('Supabase connection error:', error);
           setIsSupabaseConnected(false);
-          return;
+        } else {
+          setIsSupabaseConnected(true);
+          fetchProblemsFromDatabase(selectedTable);
         }
-        
-        setIsSupabaseConnected(true);
       } catch (error) {
         console.error('Supabase connection check failed:', error);
         setIsSupabaseConnected(false);
@@ -51,59 +73,62 @@ const Index = () => {
       }
     };
     
-    if (dataSource === 'database') {
-      checkSupabaseConnection();
-    }
-  }, [dataSource]);
+    checkSupabaseConnection();
+  }, []);
 
-  // Load problems from Supabase when database source is selected and connection is confirmed
+  // When table selection changes
   useEffect(() => {
-    const fetchProblemsFromDatabase = async () => {
-      if (dataSource === 'database' && isSupabaseConnected) {
-        try {
-          // Updated table name from 'PS1' to 'problems'
-          const { data, error } = await supabase
-            .from('problems')
-            .select('*');
-          
-          if (error) {
-            toast({
-              title: "Error Loading Problems",
-              description: error.message,
-              variant: "destructive"
-            });
-            return;
-          }
-          
-          if (data && data.length > 0) {
-            // Convert numeric fields to strings to match MathProblem type
-            const formattedData: MathProblem[] = data.map(item => ({
-              ...item,
-              code: item.code?.toString() || "",
-              difficulty: item.difficulty?.toString() || ""
-            }));
-            
-            setProblems(formattedData);
-            setSelectedProblemId(formattedData[0].question_id);
-          } else {
-            toast({
-              title: "No Problems Found",
-              description: "No problems were found in the database."
-            });
-          }
-        } catch (error) {
-          console.error('Error fetching problems:', error);
+    if (selectedTable && isSupabaseConnected) {
+      fetchProblemsFromDatabase(selectedTable);
+    }
+  }, [selectedTable]);
+
+  // Load problems from Supabase
+  const fetchProblemsFromDatabase = async (tableName: string) => {
+    if (isSupabaseConnected) {
+      try {
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .order('question_id', { ascending: true });
+        
+        if (error) {
           toast({
             title: "Error Loading Problems",
-            description: "Failed to load problems from database",
+            description: error.message,
             variant: "destructive"
           });
+          return;
         }
+        
+        if (data && data.length > 0) {
+          // Convert numeric fields to strings to match MathProblem type
+          const formattedData: MathProblem[] = data.map(item => ({
+            ...item,
+            code: item.code?.toString() || "",
+            difficulty: item.difficulty?.toString() || "",
+            checked: Boolean(item.checked),
+            corrected: Boolean(item.corrected)
+          }));
+          
+          setProblems(formattedData);
+          setSelectedProblemId(formattedData[0].question_id);
+        } else {
+          toast({
+            title: "No Problems Found",
+            description: "No problems were found in the database."
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching problems:', error);
+        toast({
+          title: "Error Loading Problems",
+          description: "Failed to load problems from database",
+          variant: "destructive"
+        });
       }
-    };
-
-    fetchProblemsFromDatabase();
-  }, [dataSource, isSupabaseConnected, toast]);
+    }
+  };
 
   useEffect(() => {
     // Remove any existing MathJax script to avoid duplicates
@@ -129,9 +154,6 @@ const Index = () => {
         tags: 'ams'
       },
       options: {
-        enableMathMenu: false,
-        enableEnvironments: true,
-        ignoreHtmlClass: 'tex2jax_ignore',
         processHtmlClass: 'tex2jax_process'
       },
       loader: {
@@ -190,37 +212,44 @@ const Index = () => {
   const handleSaveChanges = async () => {
     if (!currentProblem || !selectedField) return;
 
+    let updatedValue = editValue;
+    // For boolean fields, convert string to boolean
+    if (typeof currentProblem[selectedField] === 'boolean') {
+      updatedValue = editValue.toLowerCase() === 'true' ? 'true' : 'false';
+    }
+
     const updatedProblem = {
       ...currentProblem,
-      [selectedField]: editValue
+      [selectedField]: updatedValue,
+      corrected: true // Mark as corrected when any field is changed
     };
 
-    // If data source is database, update in Supabase
-    if (dataSource === 'database' && isSupabaseConnected) {
-      try {
-        // Updated table name from 'PS1' to 'problems'
-        const { error } = await supabase
-          .from('problems')
-          .update({ [selectedField]: editValue })
-          .eq('question_id', currentProblem.question_id);
+    try {
+      // Update in Supabase
+      const { error } = await supabase
+        .from(selectedTable)
+        .update({ 
+          [selectedField]: updatedValue,
+          corrected: true 
+        })
+        .eq('question_id', currentProblem.question_id);
           
-        if (error) {
-          toast({
-            title: "Update Failed",
-            description: error.message,
-            variant: "destructive"
-          });
-          return;
-        }
-      } catch (error) {
-        console.error('Error updating problem:', error);
+      if (error) {
         toast({
           title: "Update Failed",
-          description: "Could not save changes to the database",
+          description: error.message,
           variant: "destructive"
         });
         return;
       }
+    } catch (error) {
+      console.error('Error updating problem:', error);
+      toast({
+        title: "Update Failed",
+        description: "Could not save changes to the database",
+        variant: "destructive"
+      });
+      return;
     }
     
     // Update local state
@@ -245,57 +274,106 @@ const Index = () => {
     });
   };
 
-  const handleCSVUpload = (data: MathProblem[]) => {
-    // Filter out any problems with empty question_ids to prevent Select.Item errors
-    const validProblems = data.filter(problem => problem.question_id && problem.question_id.trim() !== "");
-    
-    setProblems(validProblems);
-    if (validProblems.length > 0) {
-      setSelectedProblemId(validProblems[0].question_id);
-    }
-    setDataSource('csv');
-  };
-
   const handleImageUpload = (images: Record<string, string>) => {
     setImageMap(images);
   };
+
+  const handleToggleChecked = async () => {
+    if (!currentProblem) return;
+    
+    const newCheckedValue = !currentProblem.checked;
+    
+    try {
+      const { error } = await supabase
+        .from(selectedTable)
+        .update({ checked: newCheckedValue })
+        .eq('question_id', currentProblem.question_id);
+      
+      if (error) {
+        toast({
+          title: "Update Failed",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Update local state
+      const updatedProblem = {
+        ...currentProblem,
+        checked: newCheckedValue
+      };
+      
+      const updatedProblems = problems.map(p => 
+        p.question_id === currentProblem.question_id ? updatedProblem : p
+      );
+      
+      setProblems(updatedProblems);
+      setCurrentProblem(updatedProblem);
+      
+      toast({
+        title: newCheckedValue ? "Problem Marked as Checked" : "Problem Marked as Unchecked",
+        description: `Problem ${currentProblem.question_id} has been updated`
+      });
+    } catch (error) {
+      console.error('Error updating checked status:', error);
+      toast({
+        title: "Update Failed",
+        description: "Could not update checked status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  if (isCheckingConnection) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <h1 className="text-3xl font-bold mb-6">Math Problem Reviewer</h1>
+        <div className="text-center py-10">
+          <p>Connecting to database...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSupabaseConnected) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <h1 className="text-3xl font-bold mb-6">Math Problem Reviewer</h1>
+        <div className="text-center py-10">
+          <p>Unable to connect to database. Please check your Supabase configuration.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6">Math Problem Reviewer</h1>
       
-      <DataSourceSelector 
-        dataSource={dataSource}
-        setDataSource={setDataSource}
-        isSupabaseConnected={isSupabaseConnected}
-        isCheckingConnection={isCheckingConnection}
-        problems={problems}
-      />
-      
-      {dataSource === 'csv' && (
-        <>
-          <FileUploader 
-            onCSVUpload={handleCSVUpload} 
-            onImageUpload={handleImageUpload} 
-          />
-          
-          {problems.length > 0 && (
-            <ProblemNavigation
-              problems={problems}
-              selectedProblemId={selectedProblemId}
-              setSelectedProblemId={setSelectedProblemId}
-              handleExport={handleExport}
-            />
-          )}
-        </>
+      {availableTables.length > 0 && (
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Select Table:</label>
+          <select 
+            value={selectedTable} 
+            onChange={(e) => setSelectedTable(e.target.value)}
+            className="border rounded-md py-2 px-4 w-full sm:w-auto"
+          >
+            {availableTables.map(table => (
+              <option key={table} value={table}>{table}</option>
+            ))}
+          </select>
+        </div>
       )}
       
-      {dataSource === 'database' && isSupabaseConnected && problems.length > 0 && (
+      {problems.length > 0 && (
         <ProblemNavigation
           problems={problems}
           selectedProblemId={selectedProblemId}
           setSelectedProblemId={setSelectedProblemId}
           handleExport={handleExport}
+          currentProblem={currentProblem}
+          handleToggleChecked={handleToggleChecked}
         />
       )}
       

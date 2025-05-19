@@ -8,7 +8,9 @@ export interface MathProblem {
   code?: string;
   difficulty?: string;
   solutiontextexpanded?: string;
-  skills_for_steps?: string;
+  skills?: string;
+  checked?: boolean;
+  corrected?: boolean;
 }
 
 export type FieldKey = keyof MathProblem;

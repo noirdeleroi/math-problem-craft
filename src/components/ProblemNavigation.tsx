@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { MathProblem } from '../types/mathProblem';
 
 interface ProblemNavigationProps {
@@ -10,13 +10,17 @@ interface ProblemNavigationProps {
   selectedProblemId: string;
   setSelectedProblemId: (id: string) => void;
   handleExport: () => void;
+  currentProblem: MathProblem | null;
+  handleToggleChecked: () => void;
 }
 
 const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
   problems,
   selectedProblemId,
   setSelectedProblemId,
-  handleExport
+  handleExport,
+  currentProblem,
+  handleToggleChecked
 }) => {
   const navigateToNextProblem = () => {
     if (!problems.length) return;
@@ -82,9 +86,19 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
           </Button>
         </div>
         
-        <Button onClick={handleExport}>
-          Download CSV
-        </Button>
+        <div className="flex space-x-2">
+          <Button 
+            onClick={handleToggleChecked}
+            variant={currentProblem?.checked ? "default" : "outline"}
+            className={currentProblem?.checked ? "bg-green-500 hover:bg-green-600" : ""}
+          >
+            <Check className="h-4 w-4 mr-1" /> {currentProblem?.checked ? "Checked" : "Mark as Checked"}
+          </Button>
+          
+          <Button onClick={handleExport}>
+            Download CSV
+          </Button>
+        </div>
       </div>
     </div>
   );

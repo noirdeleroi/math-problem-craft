@@ -13,7 +13,7 @@ const AdditionalInformation: React.FC<AdditionalInformationProps> = ({ currentPr
   return (
     <Card className="p-4">
       <h2 className="text-xl font-bold mb-4">Additional Information</h2>
-      {['code', 'difficulty', 'solutiontextexpanded', 'skills_for_steps'].map((field) => (
+      {['code', 'difficulty', 'solutiontextexpanded', 'skills'].map((field) => (
         <Field
           key={field}
           label={field as FieldKey}
