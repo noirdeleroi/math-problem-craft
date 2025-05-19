@@ -33,28 +33,13 @@ const Index = () => {
     const checkSupabaseConnection = async () => {
       try {
         setIsCheckingConnection(true);
-        // Get available tables
-        const { data: tablesData, error: tablesError } = await supabase
-          .from('_tables')
-          .select('name')
-          .not('name', 'ilike', 'pg_%')
-          .not('name', 'ilike', 'information_schema%');
+        // Get available tables - using a different approach that doesn't use _tables
+        // which doesn't exist in standard Supabase setup
+        const { data: schemas } = await supabase.rpc('get_schemas', {});
         
-        if (!tablesError && tablesData) {
-          const tables = tablesData.map(t => t.name).filter(name => 
-            !name.startsWith('_') && name !== 'schema_migrations'
-          );
-          setAvailableTables(tables);
-          if (tables.includes('problems')) {
-            setSelectedTable('problems');
-          } else if (tables.length > 0) {
-            setSelectedTable(tables[0]);
-          }
-        }
-        
-        // Check if we can access the problems table
+        // We'll use a simple approach - if we can query the problems table, we assume connection works
         const { data, error } = await supabase
-          .from(selectedTable)
+          .from('problems')
           .select('question_id')
           .limit(1);
         
@@ -63,7 +48,11 @@ const Index = () => {
           setIsSupabaseConnected(false);
         } else {
           setIsSupabaseConnected(true);
-          fetchProblemsFromDatabase(selectedTable);
+          // For now, we'll just use a fixed list of available tables
+          // since we know 'problems' is the main table
+          setAvailableTables(['problems']);
+          setSelectedTable('problems');
+          fetchProblemsFromDatabase('problems');
         }
       } catch (error) {
         console.error('Supabase connection check failed:', error);
@@ -76,19 +65,12 @@ const Index = () => {
     checkSupabaseConnection();
   }, []);
 
-  // When table selection changes
-  useEffect(() => {
-    if (selectedTable && isSupabaseConnected) {
-      fetchProblemsFromDatabase(selectedTable);
-    }
-  }, [selectedTable]);
-
   // Load problems from Supabase
   const fetchProblemsFromDatabase = async (tableName: string) => {
-    if (isSupabaseConnected) {
+    if (isSupabaseConnected && tableName === 'problems') {
       try {
         const { data, error } = await supabase
-          .from(tableName)
+          .from('problems')
           .select('*')
           .order('question_id', { ascending: true });
         
@@ -225,22 +207,24 @@ const Index = () => {
     };
 
     try {
-      // Update in Supabase
-      const { error } = await supabase
-        .from(selectedTable)
-        .update({ 
-          [selectedField]: updatedValue,
-          corrected: true 
-        })
-        .eq('question_id', currentProblem.question_id);
-          
-      if (error) {
-        toast({
-          title: "Update Failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
+      // Update in Supabase - only if the selected table is 'problems'
+      if (selectedTable === 'problems') {
+        const { error } = await supabase
+          .from('problems')
+          .update({ 
+            [selectedField]: updatedValue,
+            corrected: true 
+          })
+          .eq('question_id', currentProblem.question_id);
+            
+        if (error) {
+          toast({
+            title: "Update Failed",
+            description: error.message,
+            variant: "destructive"
+          });
+          return;
+        }
       }
     } catch (error) {
       console.error('Error updating problem:', error);
@@ -284,18 +268,21 @@ const Index = () => {
     const newCheckedValue = !currentProblem.checked;
     
     try {
-      const { error } = await supabase
-        .from(selectedTable)
-        .update({ checked: newCheckedValue })
-        .eq('question_id', currentProblem.question_id);
-      
-      if (error) {
-        toast({
-          title: "Update Failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
+      // Only update if the selected table is 'problems'
+      if (selectedTable === 'problems') {
+        const { error } = await supabase
+          .from('problems')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        
+        if (error) {
+          toast({
+            title: "Update Failed",
+            description: error.message,
+            variant: "destructive"
+          });
+          return;
+        }
       }
       
       // Update local state
