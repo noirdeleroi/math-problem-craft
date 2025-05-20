@@ -18,6 +18,11 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
     ? convertLatexToHtml(value)
     : value;
   
+  // Determine whether to use MathRenderer or dangerouslySetInnerHTML
+  const hasLatexEnvironments = value && 
+    (/\\begin\{(enumerate|itemize|tabular|center|equation)\}/.test(value) ||
+     /\\\[/.test(value));
+  
   return (
     <div className="mb-4">
       <h3 className="text-sm font-medium text-gray-700 mb-1">{label}</h3>
@@ -31,6 +36,8 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
       >
         {label === 'problem_image' && value ? (
           <img src={value} alt="Problem" className="max-w-full h-auto" />
+        ) : hasLatexEnvironments ? (
+          <div dangerouslySetInnerHTML={{ __html: processedValue || '' }} />
         ) : (
           <MathRenderer text={processedValue || ''} className="break-words" />
         )}

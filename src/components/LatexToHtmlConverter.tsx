@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { convertLatexToHtml } from '../utils/latexUtils';
 import MathRenderer from './MathRenderer';
 
@@ -36,11 +36,22 @@ $E = mc^2$
 \\[ \\sum_{i=1}^{n} i = \\frac{n(n+1)}{2} \\]`);
   
   const [convertedHtml, setConvertedHtml] = useState('');
+  const resultContainerRef = useRef<HTMLDivElement>(null);
 
   const handleConvert = () => {
     const html = convertLatexToHtml(latexInput);
     setConvertedHtml(html);
   };
+
+  // Effect to typeset math when HTML is updated
+  useEffect(() => {
+    if (convertedHtml && resultContainerRef.current && window.MathJax) {
+      // Let MathJax process the container after the HTML has been injected
+      window.MathJax.typesetPromise([resultContainerRef.current]).catch((err) => {
+        console.error('MathJax error:', err);
+      });
+    }
+  }, [convertedHtml]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -79,7 +90,10 @@ $E = mc^2$
         <div className="mt-8">
           <h3 className="text-lg font-semibold mb-2">Rendered Result:</h3>
           <div className="p-4 border border-gray-300 rounded-md">
-            <MathRenderer text={convertedHtml} />
+            <div
+              ref={resultContainerRef}
+              dangerouslySetInnerHTML={{ __html: convertedHtml }}
+            />
           </div>
         </div>
       )}
