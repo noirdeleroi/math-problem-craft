@@ -37,7 +37,10 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
         {label === 'problem_image' && value ? (
           <img src={value} alt="Problem" className="max-w-full h-auto" />
         ) : hasLatexEnvironments ? (
-          <div dangerouslySetInnerHTML={{ __html: processedValue || '' }} />
+          <div 
+            dangerouslySetInnerHTML={{ __html: processedValue || '' }} 
+            className="latex-content"
+          />
         ) : (
           <MathRenderer text={processedValue || ''} className="break-words" />
         )}

@@ -5,9 +5,10 @@ import MathRenderer from './MathRenderer';
 
 const LatexToHtmlConverter: React.FC = () => {
   const [latexInput, setLatexInput] = useState(`\\begin{enumerate}
-  \\item $y = x^2 - 5x + 3$
-  \\item $y = -x^2 + 5x - 3$
-  \\item $y = x^2 + 5x + 3$
+  \\item $(-1.5; +\\infty)$
+  \\item $(+\\infty; -0.5)$
+  \\item $(+\\infty; -1.5)$
+  \\item $(-0.5; +\\infty)$
 \\end{enumerate}
 
 \\begin{itemize}
@@ -93,6 +94,7 @@ $E = mc^2$
             <div
               ref={resultContainerRef}
               dangerouslySetInnerHTML={{ __html: convertedHtml }}
+              className="latex-content"
             />
           </div>
         </div>
