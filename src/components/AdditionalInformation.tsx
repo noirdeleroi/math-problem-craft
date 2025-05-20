@@ -13,6 +13,11 @@ const AdditionalInformation: React.FC<AdditionalInformationProps> = ({ currentPr
   return (
     <Card className="p-4">
       <h2 className="text-xl font-bold mb-4">Additional Information</h2>
+      <Field
+        label="solutiontextexpanded"
+        value={currentProblem.solutiontextexpanded || ""}
+        onFieldClick={(value) => onFieldClick('solutiontextexpanded', value)}
+      />
       {['code', 'difficulty', 'skills'].map((field) => (
         <Field
           key={field}
