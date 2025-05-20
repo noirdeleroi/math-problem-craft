@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { convertLatexEnumerateToHtml } from '../utils/latexUtils';
+import { convertLatexToHtml } from '../utils/latexUtils';
 import MathRenderer from './MathRenderer';
 
 const LatexToHtmlConverter: React.FC = () => {
@@ -8,12 +8,26 @@ const LatexToHtmlConverter: React.FC = () => {
   \\item $y = x^2 - 5x + 3$
   \\item $y = -x^2 + 5x - 3$
   \\item $y = x^2 + 5x + 3$
-\\end{enumerate}`);
+\\end{enumerate}
+
+\\begin{tabular}{|c|c|c|}
+\\hline
+$x$ & $f(x)$ & $g(x)$ \\\\
+\\hline
+1 & $x^2$ & $x^3$ \\\\
+2 & $2^2=4$ & $2^3=8$ \\\\
+3 & $3^2=9$ & $3^3=27$ \\\\
+\\hline
+\\end{tabular}
+
+\\begin{center}
+$E = mc^2$
+\\end{center}`);
   
   const [convertedHtml, setConvertedHtml] = useState('');
 
   const handleConvert = () => {
-    const html = convertLatexEnumerateToHtml(latexInput);
+    const html = convertLatexToHtml(latexInput);
     setConvertedHtml(html);
   };
 

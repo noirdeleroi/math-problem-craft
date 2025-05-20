@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import MathRenderer from './MathRenderer';
+import { convertLatexToHtml } from '../utils/latexUtils';
 
 interface FieldProps {
   label: string;
@@ -10,6 +11,11 @@ interface FieldProps {
 
 const Field = ({ label, value, onFieldClick }: FieldProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  
+  // Convert LaTeX environments to HTML before rendering
+  const processedValue = ['problem_text', 'answer', 'solution_text'].includes(label)
+    ? convertLatexToHtml(value)
+    : value;
   
   return (
     <div className="mb-4">
@@ -25,7 +31,7 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
         {label === 'problem_image' && value ? (
           <img src={value} alt="Problem" className="max-w-full h-auto" />
         ) : (
-          <MathRenderer text={value || ''} className="break-words" />
+          <MathRenderer text={processedValue || ''} className="break-words" />
         )}
       </div>
     </div>
