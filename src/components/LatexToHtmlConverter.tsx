@@ -4,7 +4,11 @@ import { convertLatexToHtml } from '../utils/latexUtils';
 import MathRenderer from './MathRenderer';
 
 const LatexToHtmlConverter: React.FC = () => {
-  const [latexInput, setLatexInput] = useState(`\\begin{enumerate}
+  const [latexInput, setLatexInput] = useState(`Шаг 1. Построим график функции \\(y=\\frac{2|x|}{x}\\).  
+При \\(x>0\\): \\(|x|=x\\), значит \\(y=\\frac{2x}{x}=2\\).  
+При \\(x<0\\): \\(|x|=-x\\), значит \\(y=\\frac{2(-x)}{x}=-2\\).
+
+\\begin{enumerate}
   \\item $(-1.5; +\\infty)$
   \\item $(+\\infty; -0.5)$
   \\item $(+\\infty; -1.5)$
@@ -20,21 +24,9 @@ const LatexToHtmlConverter: React.FC = () => {
   f(x) = \\int_{-\\infty}^\\infty \\hat f(\\xi)\\,e^{2 \\pi i \\xi x} \\,d\\xi
 \\end{equation}
 
-\\begin{tabular}{|c|c|c|}
-\\hline
-$x$ & $f(x)$ & $g(x)$ \\\\
-\\hline
-1 & $x^2$ & $x^3$ \\\\
-2 & $2^2=4$ & $2^3=8$ \\\\
-3 & $3^2=9$ & $3^3=27$ \\\\
-\\hline
-\\end{tabular}
-
-\\begin{center}
-$E = mc^2$
-\\end{center}
-
-\\[ \\sum_{i=1}^{n} i = \\frac{n(n+1)}{2} \\]`);
+\\[
+-2<p<2.
+\\]`);
   
   const [convertedHtml, setConvertedHtml] = useState('');
   const resultContainerRef = useRef<HTMLDivElement>(null);

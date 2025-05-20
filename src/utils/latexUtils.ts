@@ -251,9 +251,49 @@ export function convertLatexDisplayMathToHtml(latexString: string): string {
 }
 
 /**
+ * Converts plain text with LaTeX math expressions into HTML paragraphs.
+ * Line breaks are converted to paragraph tags, and math expressions are preserved.
+ * 
+ * @param latexString Text string with LaTeX math expressions and line breaks
+ * @returns HTML string with paragraphs and preserved math expressions
+ */
+export function convertLatexTextToHtml(latexString: string): string {
+  if (!latexString) return '';
+  
+  // Split the input by double line breaks (indicating paragraph breaks)
+  const paragraphs = latexString.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+  
+  if (paragraphs.length === 0) {
+    // If no clear paragraphs, treat single line breaks as <br> tags
+    const lines = latexString.split(/\n/).map(line => line.trim()).filter(line => line.length > 0);
+    if (lines.length === 0) return '';
+    
+    const processedLines = lines.join('<br>\n');
+    return processedLines;
+  }
+  
+  // Process each paragraph
+  const htmlParagraphs = paragraphs.map(paragraph => {
+    // If paragraph contains block math, wrap it in a div instead of p
+    if (paragraph.includes('\\[') && paragraph.includes('\\]')) {
+      return `<div>${paragraph}</div>`;
+    }
+    
+    // Handle single line breaks within paragraphs
+    const lines = paragraph.split(/\n/).map(line => line.trim()).filter(line => line.length > 0);
+    const processedParagraph = lines.join('<br>\n');
+    
+    return `<p>${processedParagraph}</p>`;
+  });
+  
+  return htmlParagraphs.join('\n\n');
+}
+
+/**
  * Converts various LaTeX environments to HTML
  * while preserving math expressions for MathJax rendering.
- * Supports: enumerate, itemize, tabular, center, equation, and display math environments.
+ * Supports: enumerate, itemize, tabular, center, equation, display math environments,
+ * and plain text with math expressions.
  * 
  * @param latexString LaTeX string containing supported environments
  * @returns HTML string with properly formatted HTML and MathJax delimiters
@@ -269,6 +309,16 @@ export function convertLatexToHtml(latexString: string): string {
   result = convertLatexTabularToHtml(result);
   result = convertLatexCenterToHtml(result);
   result = convertLatexDisplayMathToHtml(result);
+  
+  // If there are no special LaTeX environments but there's text with possible math,
+  // convert to HTML paragraphs while preserving math
+  if (result === latexString &&
+      !result.includes('\\begin{') &&
+      !result.includes('\\end{') &&
+      !result.includes('\\[') &&
+      !result.includes('\\]')) {
+    result = convertLatexTextToHtml(result);
+  }
   
   return result;
 }
