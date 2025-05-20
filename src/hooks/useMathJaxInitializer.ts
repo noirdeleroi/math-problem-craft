@@ -17,6 +17,8 @@ export function useMathJaxInitializer() {
     script.async = true;
     
     // Configure MathJax
+    // Note: We don't actually set typesetPromise here as it will be added by the MathJax library
+    // when it loads. The type definition is for using it after MathJax has loaded.
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -26,7 +28,7 @@ export function useMathJaxInitializer() {
       options: {
         skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
       }
-    };
+    } as any; // Use type assertion to satisfy TypeScript until MathJax fully loads
     
     document.head.appendChild(script);
     
