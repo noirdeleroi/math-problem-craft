@@ -1,7 +1,5 @@
-
 import React, { useEffect, useRef } from 'react';
-import 'katex/dist/katex.min.css';
-import katex from 'katex';
+import { useMathJaxInitializer } from '../hooks/useMathJaxInitializer';
 
 interface MathRendererProps {
   text: string;
@@ -10,32 +8,28 @@ interface MathRendererProps {
 
 const MathRenderer = ({ text, className = '' }: MathRendererProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  // Initialize MathJax - this is redundant since we already initialize it in Index.tsx,
+  // but keeping it here for component isolation
+  useMathJaxInitializer();
 
   useEffect(() => {
     if (!containerRef.current || !text) return;
     
     try {
-      // Process the text to find and render LaTeX expressions
-      const processedText = text.replace(/\$(.*?)\$/g, (match, formula) => {
-        const span = document.createElement('span');
-        katex.render(formula, span, {
-          throwOnError: false,
-          displayMode: false
-        });
-        return span.outerHTML;
-      }).replace(/\$\$(.*?)\$\$/g, (match, formula) => {
-        const span = document.createElement('span');
-        katex.render(formula, span, {
-          throwOnError: false,
-          displayMode: true
-        });
-        return span.outerHTML;
-      });
+      // Set the text content first
+      containerRef.current.innerHTML = text;
       
-      containerRef.current.innerHTML = processedText;
+      // Then let MathJax process it
+      if (window.MathJax) {
+        window.MathJax.typesetPromise([containerRef.current]).catch((err) => {
+          console.error('MathJax error:', err);
+        });
+      }
     } catch (error) {
       console.error('Error rendering math:', error);
-      containerRef.current.textContent = text;
+      if (containerRef.current) {
+        containerRef.current.textContent = text;
+      }
     }
   }, [text]);
 
