@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'katex/dist/katex.min.css';
 import katex from 'katex';
 
