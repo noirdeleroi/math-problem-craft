@@ -13,6 +13,7 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
   const [isHovered, setIsHovered] = useState(false);
   
   // Convert LaTeX environments to HTML before rendering
+  // Now improved to handle all supported LaTeX environments
   const processedValue = ['problem_text', 'answer', 'solution_text'].includes(label)
     ? convertLatexToHtml(value)
     : value;

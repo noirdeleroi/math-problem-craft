@@ -10,6 +10,15 @@ const LatexToHtmlConverter: React.FC = () => {
   \\item $y = x^2 + 5x + 3$
 \\end{enumerate}
 
+\\begin{itemize}
+  \\item First bullet with $a^2 + b^2 = c^2$
+  \\item Second bullet with $E = mc^2$
+\\end{itemize}
+
+\\begin{equation}
+  f(x) = \\int_{-\\infty}^\\infty \\hat f(\\xi)\\,e^{2 \\pi i \\xi x} \\,d\\xi
+\\end{equation}
+
 \\begin{tabular}{|c|c|c|}
 \\hline
 $x$ & $f(x)$ & $g(x)$ \\\\
@@ -22,7 +31,9 @@ $x$ & $f(x)$ & $g(x)$ \\\\
 
 \\begin{center}
 $E = mc^2$
-\\end{center}`);
+\\end{center}
+
+\\[ \\sum_{i=1}^{n} i = \\frac{n(n+1)}{2} \\]`);
   
   const [convertedHtml, setConvertedHtml] = useState('');
 
