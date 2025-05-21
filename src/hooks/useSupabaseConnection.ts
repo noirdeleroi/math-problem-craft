@@ -9,18 +9,75 @@ export function useSupabaseConnection() {
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
+  const [availableTables, setAvailableTables] = useState<string[]>(['problems', 'problems_oge_100']);
+  const [selectedTable, setSelectedTable] = useState<string>('problems_oge_100');
 
-  // Automatically check Supabase connection on mount and fetch problems
-  useEffect(() => {
-    const checkConnectionAndFetchProblems = async () => {
-      try {
-        setIsCheckingConnection(true);
+  // Function to fetch problems from a specific table
+  const fetchProblemsFromDatabase = async (tableName: string) => {
+    try {
+      setIsCheckingConnection(true);
+      
+      // Query the selected table
+      const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('question_id', { ascending: true });
+      
+      if (error) {
+        console.error(`Error fetching from ${tableName}:`, error);
+        toast({
+          title: "Fetch Error",
+          description: `Could not fetch data from ${tableName}.`,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      console.log(`Data fetched from ${tableName}:`, data);
+      
+      // Format and set problems data
+      if (data && data.length > 0) {
+        // Convert numeric fields to strings to match MathProblem type
+        const formattedData: MathProblem[] = data.map(item => ({
+          ...item,
+          code: item.code?.toString() || "",
+          difficulty: item.difficulty?.toString() || "",
+          checked: Boolean(item.checked),
+          corrected: Boolean(item.corrected)
+        }));
         
-        // Query the problems table to check connection
-        const { data, error } = await supabase
-          .from('problems')
-          .select('*')
-          .order('question_id', { ascending: true });
+        console.log('Formatted data:', formattedData);
+        setProblems(formattedData);
+        setIsSupabaseConnected(true);
+      } else {
+        console.log(`No problems found in ${tableName}`);
+        setProblems([]);
+        toast({
+          title: "No Problems Found",
+          description: `No problems were found in the ${tableName} table.`
+        });
+      }
+    } catch (error) {
+      console.error('Data fetch failed:', error);
+      toast({
+        title: "Fetch Error",
+        description: "Could not fetch data from the database.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCheckingConnection(false);
+    }
+  };
+
+  // Automatically check Supabase connection on mount
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        // Simple query to check connection
+        const { error } = await supabase
+          .from('problems_oge_100')
+          .select('question_id')
+          .limit(1);
         
         if (error) {
           console.error('Supabase connection error:', error);
@@ -31,29 +88,10 @@ export function useSupabaseConnection() {
             variant: "destructive"
           });
         } else {
-          console.log('Supabase connection successful, got data:', data);
+          console.log('Supabase connection successful');
           setIsSupabaseConnected(true);
-          
-          // Format and set problems data
-          if (data && data.length > 0) {
-            // Convert numeric fields to strings to match MathProblem type
-            const formattedData: MathProblem[] = data.map(item => ({
-              ...item,
-              code: item.code?.toString() || "",
-              difficulty: item.difficulty?.toString() || "",
-              checked: Boolean(item.checked),
-              corrected: Boolean(item.corrected)
-            }));
-            
-            console.log('Formatted data:', formattedData);
-            setProblems(formattedData);
-          } else {
-            console.log('No problems found');
-            toast({
-              title: "No Problems Found",
-              description: "No problems were found in the database."
-            });
-          }
+          // Fetch problems from the initial selected table
+          fetchProblemsFromDatabase(selectedTable);
         }
       } catch (error) {
         console.error('Supabase connection check failed:', error);
@@ -63,18 +101,20 @@ export function useSupabaseConnection() {
           description: "Could not connect to the database.",
           variant: "destructive"
         });
-      } finally {
-        setIsCheckingConnection(false);
       }
     };
     
-    checkConnectionAndFetchProblems();
-  }, [toast]);
+    checkConnection();
+  }, [toast]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     isSupabaseConnected,
     isCheckingConnection,
     problems,
-    setProblems
+    setProblems,
+    availableTables,
+    selectedTable,
+    setSelectedTable,
+    fetchProblemsFromDatabase
   };
 }

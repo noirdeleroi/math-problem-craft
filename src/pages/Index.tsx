@@ -6,6 +6,7 @@ import ProblemNavigation from '../components/ProblemNavigation';
 import ProblemViewer from '../components/ProblemViewer';
 import ConnectionStatus from '../components/ConnectionStatus';
 import DataSourceSelector from '../components/DataSourceSelector';
+import TableSelector from '../components/TableSelector';
 import { useMathJaxInitializer } from '../hooks/useMathJaxInitializer';
 import { useProblemManager } from '../hooks/useProblemManager';
 import { useSupabaseConnection } from '../hooks/useSupabaseConnection';
@@ -14,12 +15,16 @@ const Index = () => {
   // Initialize KaTeX (using the same hook for backward compatibility)
   useMathJaxInitializer();
   
-  // Handle Supabase connection and data fetching - directly connect to problems table
+  // Handle Supabase connection and data fetching
   const {
     isSupabaseConnected,
     isCheckingConnection,
     problems,
     setProblems,
+    availableTables,
+    selectedTable,
+    setSelectedTable,
+    fetchProblemsFromDatabase
   } = useSupabaseConnection();
 
   // Handle problem management
@@ -34,7 +39,7 @@ const Index = () => {
     handleSaveChanges,
     handleToggleChecked,
     handleImageUpload,
-  } = useProblemManager(problems);
+  } = useProblemManager(problems, selectedTable);
 
   // Handle export
   const handleExport = () => {
@@ -60,6 +65,13 @@ const Index = () => {
         isSupabaseConnected={isSupabaseConnected}
         isCheckingConnection={isCheckingConnection}
         problems={problems}
+      />
+      
+      <TableSelector
+        availableTables={availableTables}
+        selectedTable={selectedTable}
+        setSelectedTable={setSelectedTable}
+        fetchProblemsFromDatabase={fetchProblemsFromDatabase}
       />
       
       {problems.length > 0 && (

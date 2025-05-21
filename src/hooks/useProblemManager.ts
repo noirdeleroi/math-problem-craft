@@ -4,7 +4,7 @@ import { MathProblem, FieldKey } from '../types/mathProblem';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
-export function useProblemManager(problems: MathProblem[]) {
+export function useProblemManager(problems: MathProblem[], selectedTable: string = 'problems_oge_100') {
   const { toast } = useToast();
   const [selectedProblemId, setSelectedProblemId] = useState<string>("");
   const [currentProblem, setCurrentProblem] = useState<MathProblem | null>(null);
@@ -54,9 +54,9 @@ export function useProblemManager(problems: MathProblem[]) {
     };
 
     try {
-      // Update in Supabase - only if the selected table is 'problems'
+      // Update in Supabase
       const { error } = await supabase
-        .from('problems')
+        .from(selectedTable)
         .update({ 
           [selectedField]: updatedValue,
           corrected: true 
@@ -75,7 +75,7 @@ export function useProblemManager(problems: MathProblem[]) {
       console.error('Error updating problem:', error);
       toast({
         title: "Update Failed",
-        description: "Could not save changes to the database",
+        description: `Could not save changes to the ${selectedTable} table`,
         variant: "destructive"
       });
       return;
@@ -103,7 +103,7 @@ export function useProblemManager(problems: MathProblem[]) {
     
     try {
       const { error } = await supabase
-        .from('problems')
+        .from(selectedTable)
         .update({ checked: newCheckedValue })
         .eq('question_id', currentProblem.question_id || "");
       
