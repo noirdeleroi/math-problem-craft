@@ -4,6 +4,8 @@ import { MathProblem, FieldKey } from '../types/mathProblem';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
+type TableName = 'problems' | 'problems_oge_100';
+
 export function useProblemManager(problems: MathProblem[], selectedTable: string = 'problems_oge_100') {
   const { toast } = useToast();
   const [selectedProblemId, setSelectedProblemId] = useState<string>("");
@@ -54,9 +56,9 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
     };
 
     try {
-      // Update in Supabase
+      // Update in Supabase with proper typing
       const { error } = await supabase
-        .from(selectedTable)
+        .from(selectedTable as TableName)
         .update({ 
           [selectedField]: updatedValue,
           corrected: true 
@@ -103,7 +105,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
     
     try {
       const { error } = await supabase
-        .from(selectedTable)
+        .from(selectedTable as TableName)
         .update({ checked: newCheckedValue })
         .eq('question_id', currentProblem.question_id || "");
       

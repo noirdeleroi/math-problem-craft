@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { MathProblem } from '../types/mathProblem';
 
+type TableName = 'problems' | 'problems_oge_100';
+
 export function useSupabaseConnection() {
   const { toast } = useToast();
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
@@ -17,9 +19,9 @@ export function useSupabaseConnection() {
     try {
       setIsCheckingConnection(true);
       
-      // Query the selected table
+      // Query the selected table with proper typing
       const { data, error } = await supabase
-        .from(tableName)
+        .from(tableName as TableName)
         .select('*')
         .order('question_id', { ascending: true });
       
@@ -39,7 +41,13 @@ export function useSupabaseConnection() {
       if (data && data.length > 0) {
         // Convert numeric fields to strings to match MathProblem type
         const formattedData: MathProblem[] = data.map(item => ({
-          ...item,
+          question_id: item.question_id || "",
+          problem_text: item.problem_text || "",
+          answer: item.answer || "",
+          solution_text: item.solution_text || "",
+          problem_image: item.problem_image,
+          solutiontextexpanded: item.solutiontextexpanded,
+          skills: item.skills,
           code: item.code?.toString() || "",
           difficulty: item.difficulty?.toString() || "",
           checked: Boolean(item.checked),
