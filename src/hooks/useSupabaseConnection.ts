@@ -4,14 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { MathProblem } from '../types/mathProblem';
 
-type TableName = 'problems' | 'problems_oge_100';
+type TableName = 'problems' | 'problems_oge_100' | 'problems_pandoc';
 
 export function useSupabaseConnection() {
   const { toast } = useToast();
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
-  const [availableTables, setAvailableTables] = useState<string[]>(['problems', 'problems_oge_100']);
+  const [availableTables, setAvailableTables] = useState<string[]>(['problems', 'problems_oge_100', 'problems_pandoc']);
   const [selectedTable, setSelectedTable] = useState<string>('problems_oge_100');
 
   // Function to fetch problems from a specific table
