@@ -17,11 +17,7 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
     ? convertLatexTextToHtml(value)
     : value;
   
-  // Determine whether to use MathRenderer or dangerouslySetInnerHTML
-  const hasLatexEnvironments = value && 
-    (/\\begin\{(enumerate|itemize|tabular|center|equation)\}/.test(value) ||
-     /\\\[/.test(value) ||
-     value.includes('\n'));
+
   
   return (
     <div className="mb-4">
