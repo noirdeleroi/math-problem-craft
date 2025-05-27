@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import MathRenderer from './MathRenderer';
-import { convertLatexToHtml } from '../utils/latexUtils';
+import { convertLatexTextToHtml } from '../utils/latexUtils';
 
 interface FieldProps {
   label: string;
@@ -14,7 +14,7 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
   
   // Convert LaTeX environments to HTML before rendering
   const processedValue = ['problem_text', 'answer', 'solution_text'].includes(label)
-    ? convertLatexToHtml(value)
+    ? convertLatexTextToHtml(value)
     : value;
   
   // Determine whether to use MathRenderer or dangerouslySetInnerHTML
