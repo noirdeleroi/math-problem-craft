@@ -27,12 +27,12 @@ export function convertLatexTextToHtml(tex: string): string {
   tex = tex.replace(/\\section\*{(.+?)}/g, '<h2>$1</h2>');
   tex = tex.replace(/\\subsection\*{(.+?)}/g, '<h3 class="subsection-title">$1</h3>');
   tex = tex.replace(/\\paragraph{(.+?)}/g, '<p><strong>$1</strong></p>');
-  tex = tex.replace(/\\textbf{(.+?)}/g, '<p><strong>$1</strong></p>');
+  tex = tex.replace(/\\textbf{(.+?)}/g, '<strong>$1</strong>');
 
   tex = tex.replace(/\\begin{itemize}/g, '<ul>');
   tex = tex.replace(/\\end{itemize}/g, '</ul>');
   tex = tex.replace(/\\item/g, '<li>');
-  tex = tex.replace(/\n\n/g, '<br><br>');
+  tex = tex.replace(/\n\n/g, '\n␤\n'); // placeholder for paragraph split
 
   tex = tex.replace(/\\captionof{figure}{(.+?)}/g,
     '<figcaption style="text-align: center; font-style: italic; margin-top: 8px;">$1</figcaption>'
@@ -46,6 +46,18 @@ export function convertLatexTextToHtml(tex: string): string {
   mathBlocks.forEach((block, i) => {
     tex = tex.replace(`__MATH_BLOCK_${i}__`, block);
   });
+
+  // Now wrap paragraphs safely
+  tex = tex
+    .split('\n␤\n')
+    .map(p => {
+      const trimmed = p.trim();
+      if (!trimmed) return '';
+      if (/^<.*>.*<\/.*>$/.test(trimmed)) return trimmed; // already HTML
+      if (/^\d+$/.test(trimmed)) return trimmed; // single number
+      return `<p>${trimmed}</p>`;
+    })
+    .join('\n\n');
 
   return tex;
 }
