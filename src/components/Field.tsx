@@ -17,8 +17,17 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
     ? convertLatexTextToHtml(value)
     : value;
   
+  // Check if the content has LaTeX environments that need HTML rendering
+  const hasLatexEnvironments = value && (
+    /\\begin\{(enumerate|itemize|tabular|center|equation|align)\}/.test(value) ||
+    /\\\[/.test(value) ||
+    /\\section\*/.test(value) ||
+    /\\subsection\*/.test(value) ||
+    /\\textbf/.test(value) ||
+    /\\item/.test(value) ||
+    value.includes('\n\n')
+  );
 
-  
   return (
     <div className="mb-4">
       <h3 className="text-sm font-medium text-gray-700 mb-1">{label}</h3>
