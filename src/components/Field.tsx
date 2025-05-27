@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import MathRenderer from './MathRenderer';
-import { convertLatexTextToHtml } from '../utils/latexUtils';
 
 interface FieldProps {
   label: string;
@@ -11,22 +10,6 @@ interface FieldProps {
 
 const Field = ({ label, value, onFieldClick }: FieldProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  
-  // Convert LaTeX environments to HTML before rendering
-  const processedValue = ['problem_text', 'answer', 'solution_text'].includes(label)
-    ? convertLatexTextToHtml(value)
-    : value;
-  
-  // Check if the content has LaTeX environments that need HTML rendering
-  const hasLatexEnvironments = value && (
-    /\\begin\{(enumerate|itemize|tabular|center|equation|align)\}/.test(value) ||
-    /\\\[/.test(value) ||
-    /\\section\*/.test(value) ||
-    /\\subsection\*/.test(value) ||
-    /\\textbf/.test(value) ||
-    /\\item/.test(value) ||
-    value.includes('\n\n')
-  );
 
   return (
     <div className="mb-4">
@@ -41,13 +24,8 @@ const Field = ({ label, value, onFieldClick }: FieldProps) => {
       >
         {label === 'problem_image' && value ? (
           <img src={value} alt="Problem" className="max-w-full h-auto" />
-        ) : hasLatexEnvironments ? (
-          <div 
-            dangerouslySetInnerHTML={{ __html: processedValue || '' }} 
-            className="latex-content"
-          />
         ) : (
-          <MathRenderer text={processedValue || ''} className="break-words" />
+          <MathRenderer text={value || ''} className="break-words" />
         )}
       </div>
     </div>
