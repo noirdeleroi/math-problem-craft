@@ -13,7 +13,7 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
   return (
     <Card className="p-4">
       <h2 className="text-xl font-bold mb-4">Problem Details</h2>
-      {['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text'].map((field) => {
+      {['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded', 'code', 'difficulty', 'skills'].map((field) => {
         if (field === 'problem_image' && currentProblem.problem_image) {
           return (
             <div key={field} className="mb-4">

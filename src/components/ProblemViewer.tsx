@@ -2,7 +2,6 @@
 import React from 'react';
 import { MathProblem, FieldKey } from '../types/mathProblem';
 import ProblemDetails from './ProblemDetails';
-import AdditionalInformation from './AdditionalInformation';
 import ProblemEditor from './ProblemEditor';
 
 interface ProblemViewerProps {
@@ -34,17 +33,13 @@ const ProblemViewer: React.FC<ProblemViewerProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Left Column */}
-      <ProblemDetails 
-        currentProblem={currentProblem} 
-        onFieldClick={handleFieldClick} 
-      />
-      
-      {/* Middle Column */}
-      <AdditionalInformation 
-        currentProblem={currentProblem} 
-        onFieldClick={handleFieldClick} 
-      />
+      {/* Left Column - 2/3 width */}
+      <div className="lg:col-span-2">
+        <ProblemDetails 
+          currentProblem={currentProblem} 
+          onFieldClick={handleFieldClick} 
+        />
+      </div>
       
       {/* Right Column - Editor */}
       <ProblemEditor
