@@ -47,7 +47,7 @@ export function useSupabaseConnection() {
           solution_text: item.solution_text || "",
           problem_image: item.problem_image,
           solutiontextexpanded: item.solutiontextexpanded,
-          skills: item.skills,
+          skills: typeof item.skills === 'number' ? item.skills.toString() : (item.skills || ""),
           code: item.code?.toString() || "",
           difficulty: item.difficulty?.toString() || "",
           checked: Boolean(item.checked),
