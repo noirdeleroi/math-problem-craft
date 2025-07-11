@@ -4,8 +4,6 @@ import { MathProblem, FieldKey } from '../types/mathProblem';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
-type TableName = 'problems_oge_100' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2' | 'ogemath_fipi_bank';
-
 export function useProblemManager(problems: MathProblem[], selectedTable: string = 'problems_oge_100') {
   const { toast } = useToast();
   const [selectedProblemId, setSelectedProblemId] = useState<string>("");
@@ -76,9 +74,9 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         updateData.corrected = true;
       }
 
-      // Update in Supabase with proper typing
+      // Update in Supabase
       const { error } = await supabase
-        .from(selectedTable as TableName)
+        .from(selectedTable)
         .update(updateData)
         .eq(selectedTable === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', currentProblem.question_id);
             
@@ -118,23 +116,26 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
   const handleToggleChecked = async () => {
     if (!currentProblem) return;
     
-    // Skip for ogemath_fipi_bank table as it doesn't have checked field
-    if (selectedTable === 'ogemath_fipi_bank') {
-      toast({
-        title: "Feature Not Available",
-        description: "Checked status is not available for this table type.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     const newCheckedValue = !currentProblem.checked;
     
     try {
+      let updateData: any;
+      let whereClause: any;
+      
+      if (selectedTable === 'ogemath_fipi_bank') {
+        // For ogemath_fipi_bank, convert boolean to number (0 or 1)
+        updateData = { checked: newCheckedValue ? 1 : 0 };
+        whereClause = { problem_link: currentProblem.question_id };
+      } else {
+        // For other tables, use boolean
+        updateData = { checked: newCheckedValue };
+        whereClause = { question_id: currentProblem.question_id };
+      }
+      
       const { error } = await supabase
-        .from(selectedTable as TableName)
-        .update({ checked: newCheckedValue })
-        .eq('question_id', currentProblem.question_id || "");
+        .from(selectedTable)
+        .update(updateData)
+        .match(whereClause);
       
       if (error) {
         console.error('Error updating checked status:', error);

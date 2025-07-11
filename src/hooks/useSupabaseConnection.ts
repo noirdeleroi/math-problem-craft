@@ -4,8 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { MathProblem } from '../types/mathProblem';
 
-type TableName = 'problems_oge_100' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2' | 'ogemath_fipi_bank';
-
 export function useSupabaseConnection() {
   const { toast } = useToast();
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
@@ -21,7 +19,7 @@ export function useSupabaseConnection() {
       
       // Query the selected table with proper typing
       const { data, error } = await supabase
-        .from(tableName as TableName)
+        .from(tableName)
         .select('*')
         .order(tableName === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', { ascending: true });
       
