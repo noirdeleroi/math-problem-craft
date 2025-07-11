@@ -4,14 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { MathProblem } from '../types/mathProblem';
 
-type TableName = 'problems_oge_100' | 'problems_pandoc' | 'pandoc' | 'latex_for_mathjax_by_python' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2';
+type TableName = 'problems_oge_100' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2' | 'ogemath_fipi_bank';
 
 export function useSupabaseConnection() {
   const { toast } = useToast();
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
-  const [availableTables, setAvailableTables] = useState<string[]>(['problems_oge_100', 'problems_pandoc', 'pandoc', 'latex_for_mathjax_by_python', 'OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2']);
+  const [availableTables, setAvailableTables] = useState<string[]>(['problems_oge_100', 'OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank']);
   const [selectedTable, setSelectedTable] = useState<string>('problems_oge_100');
 
   // Function to fetch problems from a specific table

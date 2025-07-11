@@ -4,7 +4,7 @@ import { MathProblem, FieldKey } from '../types/mathProblem';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
-type TableName = 'problems_oge_100' | 'problems_pandoc' | 'pandoc' | 'latex_for_mathjax_by_python' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2';
+type TableName = 'problems_oge_100' | 'OGE_SHFIPI_problems_1_25' | 'new_problems_by_skills_1' | 'new_problems_by_skills_2' | 'ogemath_fipi_bank';
 
 export function useProblemManager(problems: MathProblem[], selectedTable: string = 'problems_oge_100') {
   const { toast } = useToast();
