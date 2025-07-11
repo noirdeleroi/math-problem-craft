@@ -23,7 +23,7 @@ export function useSupabaseConnection() {
       const { data, error } = await supabase
         .from(tableName as TableName)
         .select('*')
-        .order('question_id', { ascending: true });
+        .order(tableName === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', { ascending: true });
       
       if (error) {
         console.error(`Error fetching from ${tableName}:`, error);
@@ -39,20 +39,40 @@ export function useSupabaseConnection() {
       
       // Format and set problems data
       if (data && data.length > 0) {
-        // Convert numeric fields to strings to match MathProblem type
-        const formattedData: MathProblem[] = data.map(item => ({
-          question_id: item.question_id || "",
-          problem_text: item.problem_text || "",
-          answer: item.answer || "",
-          solution_text: item.solution_text || "",
-          problem_image: item.problem_image,
-          solutiontextexpanded: item.solutiontextexpanded,
-          skills: typeof item.skills === 'number' ? item.skills.toString() : (item.skills || ""),
-          code: item.code?.toString() || "",
-          difficulty: item.difficulty?.toString() || "",
-          checked: Boolean(item.checked),
-          corrected: Boolean(item.corrected)
-        }));
+        // Convert data to match MathProblem type based on table schema
+        const formattedData: MathProblem[] = data.map(item => {
+          if (tableName === 'ogemath_fipi_bank') {
+            // Handle ogemath_fipi_bank table with different schema
+            return {
+              question_id: item.problem_link || "",
+              problem_text: item.problem_text || "",
+              answer: "", // Not available in this table
+              solution_text: item.solution_text || "",
+              problem_image: item.problem_image,
+              solutiontextexpanded: item.solutiontextexpanded,
+              skills: item.problem_number_type?.toString() || "",
+              code: "",
+              difficulty: "",
+              checked: false,
+              corrected: false
+            };
+          } else {
+            // Handle other tables with standard schema
+            return {
+              question_id: item.question_id || "",
+              problem_text: item.problem_text || "",
+              answer: item.answer || "",
+              solution_text: item.solution_text || "",
+              problem_image: item.problem_image,
+              solutiontextexpanded: item.solutiontextexpanded,
+              skills: typeof item.skills === 'number' ? item.skills.toString() : (item.skills || ""),
+              code: item.code?.toString() || "",
+              difficulty: item.difficulty?.toString() || "",
+              checked: Boolean(item.checked),
+              corrected: Boolean(item.corrected)
+            };
+          }
+        });
         
         console.log('Formatted data:', formattedData);
         setProblems(formattedData);

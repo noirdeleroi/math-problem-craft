@@ -43,6 +43,19 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
   const handleSaveChanges = async () => {
     if (!currentProblem || !selectedField) return;
 
+    // Skip updates for ogemath_fipi_bank table for fields that don't exist
+    if (selectedTable === 'ogemath_fipi_bank') {
+      const allowedFields = ['problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image'];
+      if (!allowedFields.includes(selectedField)) {
+        toast({
+          title: "Update Not Supported",
+          description: `Cannot update ${selectedField} for this table type.`,
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
     let updatedValue = editValue;
     // For boolean fields, convert string to boolean
     if (typeof currentProblem[selectedField] === 'boolean') {
@@ -52,18 +65,22 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
     const updatedProblem = {
       ...currentProblem,
       [selectedField]: updatedValue,
-      corrected: true // Mark as corrected when any field is changed
+      corrected: selectedTable !== 'ogemath_fipi_bank' ? true : currentProblem.corrected // Only update corrected for tables that support it
     };
 
     try {
+      let updateData: any = { [selectedField]: updatedValue };
+      
+      // Only add corrected field for tables that support it
+      if (selectedTable !== 'ogemath_fipi_bank') {
+        updateData.corrected = true;
+      }
+
       // Update in Supabase with proper typing
       const { error } = await supabase
         .from(selectedTable as TableName)
-        .update({ 
-          [selectedField]: updatedValue,
-          corrected: true 
-        })
-        .eq('question_id', currentProblem.question_id);
+        .update(updateData)
+        .eq(selectedTable === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', currentProblem.question_id);
             
       if (error) {
         toast({
@@ -100,6 +117,16 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
 
   const handleToggleChecked = async () => {
     if (!currentProblem) return;
+    
+    // Skip for ogemath_fipi_bank table as it doesn't have checked field
+    if (selectedTable === 'ogemath_fipi_bank') {
+      toast({
+        title: "Feature Not Available",
+        description: "Checked status is not available for this table type.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     const newCheckedValue = !currentProblem.checked;
     
