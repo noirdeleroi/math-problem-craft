@@ -826,6 +826,8 @@ export type Database = {
       }
       ogemath_fipi_bank: {
         Row: {
+          checked: number | null
+          corrected: number | null
           problem_image: string | null
           problem_link: string
           problem_number_type: number | null
@@ -834,6 +836,8 @@ export type Database = {
           solutiontextexpanded: string | null
         }
         Insert: {
+          checked?: number | null
+          corrected?: number | null
           problem_image?: string | null
           problem_link: string
           problem_number_type?: number | null
@@ -842,6 +846,8 @@ export type Database = {
           solutiontextexpanded?: string | null
         }
         Update: {
+          checked?: number | null
+          corrected?: number | null
           problem_image?: string | null
           problem_link?: string
           problem_number_type?: number | null

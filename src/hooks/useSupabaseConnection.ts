@@ -40,7 +40,7 @@ export function useSupabaseConnection() {
       // Format and set problems data
       if (data && data.length > 0) {
         // Convert data to match MathProblem type based on table schema
-        const formattedData: MathProblem[] = data.map(item => {
+        const formattedData: MathProblem[] = data.map((item: any) => {
           if (tableName === 'ogemath_fipi_bank') {
             // Handle ogemath_fipi_bank table with different schema
             return {
@@ -53,8 +53,8 @@ export function useSupabaseConnection() {
               skills: item.problem_number_type?.toString() || "",
               code: "",
               difficulty: "",
-              checked: false,
-              corrected: false
+              checked: Boolean(item.checked),
+              corrected: Boolean(item.corrected)
             };
           } else {
             // Handle other tables with standard schema
