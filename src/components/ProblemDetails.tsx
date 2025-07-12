@@ -52,8 +52,14 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
         
         const fieldValue = currentProblem[field as FieldKey];
         
-        // Skip empty fields for cleaner display (but allow 0 and false values)
-        if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
+        // Always show the comments field if it exists in the current problem, even if empty
+        // For other fields, skip empty ones for cleaner display (but allow 0 and false values)
+        if (field !== 'comments' && (fieldValue === null || fieldValue === undefined || fieldValue === '')) {
+          return null;
+        }
+        
+        // For comments field, show it if the problem has this field (from ogemath_fipi_bank table)
+        if (field === 'comments' && !('comments' in currentProblem)) {
           return null;
         }
         
