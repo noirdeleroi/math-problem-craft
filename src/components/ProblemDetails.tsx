@@ -14,9 +14,9 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
   const getFieldsToDisplay = () => {
     const baseFields = ['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded'];
     
-    // Add additional fields for ogemath_fipi_bank table
+    // Add additional fields for ogemath_fipi_bank table with problem_link right after question_id
     if (currentProblem.problem_link || currentProblem.problem_number_type || currentProblem.comments) {
-      return [...baseFields, 'problem_number_type', 'problem_link', 'comments', 'code', 'difficulty', 'skills'];
+      return ['question_id', 'problem_link', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded', 'problem_number_type', 'comments', 'code', 'difficulty', 'skills'];
     }
     
     // Standard fields for other tables
@@ -61,7 +61,7 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
           <Field
             key={field}
             label={field as FieldKey}
-            value={fieldValue as string || ""}
+            value={String(fieldValue) || ""}
             onFieldClick={(value) => onFieldClick(field as FieldKey, value)}
           />
         );

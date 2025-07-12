@@ -154,7 +154,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         // For ogemath_fipi_bank, convert boolean to number (0 or 1)
         const result = await supabase
           .from('ogemath_fipi_bank')
-          .update({ checked: newCheckedValue ? 1 : 0 })
+          .update({ checked: newCheckedValue ? "1" : "0" })
           .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
