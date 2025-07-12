@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { MathProblem } from '../types/mathProblem';
 
@@ -61,17 +62,19 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
               <SelectTrigger>
                 <SelectValue placeholder="Select a problem" />
               </SelectTrigger>
-              <SelectContent>
-                {problems.map((problem) => (
-                  problem.question_id && problem.question_id.trim() !== "" ? (
-                    <SelectItem 
-                      key={problem.question_id} 
-                      value={problem.question_id}
-                    >
-                      {problem.question_id}
-                    </SelectItem>
-                  ) : null
-                ))}
+              <SelectContent className="max-h-[200px]">
+                <ScrollArea className="h-[200px]">
+                  {problems.map((problem) => (
+                    problem.question_id && problem.question_id.trim() !== "" ? (
+                      <SelectItem 
+                        key={problem.question_id} 
+                        value={problem.question_id}
+                      >
+                        {problem.question_id}
+                      </SelectItem>
+                    ) : null
+                  ))}
+                </ScrollArea>
               </SelectContent>
             </Select>
           </div>
