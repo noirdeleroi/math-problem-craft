@@ -81,7 +81,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         const result = await supabase
           .from('ogemath_fipi_bank')
           .update(updateData)
-          .eq('problem_link', currentProblem.question_id);
+          .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase
@@ -155,7 +155,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         const result = await supabase
           .from('ogemath_fipi_bank')
           .update({ checked: newCheckedValue ? 1 : 0 })
-          .eq('problem_link', currentProblem.question_id);
+          .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase

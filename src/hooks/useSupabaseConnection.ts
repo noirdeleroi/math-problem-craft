@@ -24,7 +24,7 @@ export function useSupabaseConnection() {
         const result = await supabase
           .from('ogemath_fipi_bank')
           .select('*')
-          .order('problem_link', { ascending: true });
+          .order('question_id', { ascending: true });
         data = result.data;
         error = result.error;
       } else if (tableName === 'problems_oge_100') {
@@ -79,7 +79,7 @@ export function useSupabaseConnection() {
           if (tableName === 'ogemath_fipi_bank') {
             // Handle ogemath_fipi_bank table with different schema
             return {
-              question_id: item.problem_link || "",
+              question_id: item.question_id?.toString() || "",
               problem_text: item.problem_text || "",
               answer: item.answer || "",
               solution_text: item.solution_text || "",

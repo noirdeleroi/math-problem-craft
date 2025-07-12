@@ -53,7 +53,7 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
         const fieldValue = currentProblem[field as FieldKey];
         
         // Skip empty fields for cleaner display
-        if (!fieldValue && fieldValue !== 0) {
+        if (!fieldValue && fieldValue !== 0 && fieldValue !== false) {
           return null;
         }
         
