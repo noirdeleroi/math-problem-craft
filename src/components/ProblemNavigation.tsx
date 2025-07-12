@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -61,8 +62,8 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
               <SelectTrigger>
                 <SelectValue placeholder="Select a problem" />
               </SelectTrigger>
-              <SelectContent className="max-h-[800px]">
-                <ScrollArea className="h-[800px] [&>div>div[style]]:!bg-black">
+              <SelectContent className="max-h-[400px]">
+                <ScrollArea className="h-[400px] [&>div>div[style]]:!bg-black">
                   {problems.map((problem) => (
                     problem.question_id && problem.question_id.trim() !== "" ? (
                       <SelectItem 
