@@ -826,32 +826,41 @@ export type Database = {
       }
       ogemath_fipi_bank: {
         Row: {
-          checked: number | null
-          corrected: number | null
+          answer: string | null
+          checked: string | null
+          comments: string | null
+          corrected: string | null
           problem_image: string | null
-          problem_link: string
+          problem_link: string | null
           problem_number_type: number | null
           problem_text: string | null
+          question_id: number
           solution_text: string | null
           solutiontextexpanded: string | null
         }
         Insert: {
-          checked?: number | null
-          corrected?: number | null
+          answer?: string | null
+          checked?: string | null
+          comments?: string | null
+          corrected?: string | null
           problem_image?: string | null
-          problem_link: string
+          problem_link?: string | null
           problem_number_type?: number | null
           problem_text?: string | null
+          question_id: number
           solution_text?: string | null
           solutiontextexpanded?: string | null
         }
         Update: {
-          checked?: number | null
-          corrected?: number | null
+          answer?: string | null
+          checked?: string | null
+          comments?: string | null
+          corrected?: string | null
           problem_image?: string | null
-          problem_link?: string
+          problem_link?: string | null
           problem_number_type?: number | null
           problem_text?: string | null
+          question_id?: number
           solution_text?: string | null
           solutiontextexpanded?: string | null
         }

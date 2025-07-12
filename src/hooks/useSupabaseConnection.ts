@@ -17,11 +17,48 @@ export function useSupabaseConnection() {
     try {
       setIsCheckingConnection(true);
       
-      // Query the selected table with proper typing
-      const { data, error } = await supabase
-        .from(tableName)
-        .select('*')
-        .order(tableName === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', { ascending: true });
+      let data, error;
+      
+      // Query different tables with proper typing
+      if (tableName === 'ogemath_fipi_bank') {
+        const result = await supabase
+          .from('ogemath_fipi_bank')
+          .select('*')
+          .order('problem_link', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else if (tableName === 'problems_oge_100') {
+        const result = await supabase
+          .from('problems_oge_100')
+          .select('*')
+          .order('question_id', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else if (tableName === 'OGE_SHFIPI_problems_1_25') {
+        const result = await supabase
+          .from('OGE_SHFIPI_problems_1_25')
+          .select('*')
+          .order('question_id', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else if (tableName === 'new_problems_by_skills_1') {
+        const result = await supabase
+          .from('new_problems_by_skills_1')
+          .select('*')
+          .order('question_id', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else if (tableName === 'new_problems_by_skills_2') {
+        const result = await supabase
+          .from('new_problems_by_skills_2')
+          .select('*')
+          .order('question_id', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else {
+        console.error(`Unknown table: ${tableName}`);
+        return;
+      }
       
       if (error) {
         console.error(`Error fetching from ${tableName}:`, error);
@@ -44,15 +81,18 @@ export function useSupabaseConnection() {
             return {
               question_id: item.problem_link || "",
               problem_text: item.problem_text || "",
-              answer: "", // Not available in this table
+              answer: item.answer || "",
               solution_text: item.solution_text || "",
               problem_image: item.problem_image,
               solutiontextexpanded: item.solutiontextexpanded,
               skills: item.problem_number_type?.toString() || "",
               code: "",
               difficulty: "",
-              checked: Boolean(item.checked),
-              corrected: Boolean(item.corrected)
+              checked: item.checked === 1 || item.checked === '1' || item.checked === true,
+              corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
+              problem_number_type: item.problem_number_type?.toString() || "",
+              problem_link: item.problem_link || "",
+              comments: item.comments || ""
             };
           } else {
             // Handle other tables with standard schema
@@ -67,7 +107,10 @@ export function useSupabaseConnection() {
               code: item.code?.toString() || "",
               difficulty: item.difficulty?.toString() || "",
               checked: Boolean(item.checked),
-              corrected: Boolean(item.corrected)
+              corrected: Boolean(item.corrected),
+              problem_number_type: "",
+              problem_link: "",
+              comments: ""
             };
           }
         });

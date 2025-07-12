@@ -10,10 +10,25 @@ interface ProblemDetailsProps {
 }
 
 const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onFieldClick }) => {
+  // Define field order based on table type
+  const getFieldsToDisplay = () => {
+    const baseFields = ['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded'];
+    
+    // Add additional fields for ogemath_fipi_bank table
+    if (currentProblem.problem_link || currentProblem.problem_number_type || currentProblem.comments) {
+      return [...baseFields, 'problem_number_type', 'problem_link', 'comments', 'code', 'difficulty', 'skills'];
+    }
+    
+    // Standard fields for other tables
+    return [...baseFields, 'code', 'difficulty', 'skills'];
+  };
+
+  const fieldsToDisplay = getFieldsToDisplay();
+
   return (
     <Card className="p-4">
       <h2 className="text-xl font-bold mb-4">Problem Details</h2>
-      {['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded', 'code', 'difficulty', 'skills'].map((field) => {
+      {fieldsToDisplay.map((field) => {
         if (field === 'problem_image' && currentProblem.problem_image) {
           return (
             <div key={field} className="mb-4">
@@ -34,11 +49,19 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
             </div>
           );
         }
+        
+        const fieldValue = currentProblem[field as FieldKey];
+        
+        // Skip empty fields for cleaner display
+        if (!fieldValue && fieldValue !== 0) {
+          return null;
+        }
+        
         return (
           <Field
             key={field}
             label={field as FieldKey}
-            value={currentProblem[field as FieldKey] as string || ""}
+            value={fieldValue as string || ""}
             onFieldClick={(value) => onFieldClick(field as FieldKey, value)}
           />
         );

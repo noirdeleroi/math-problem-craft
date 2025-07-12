@@ -43,7 +43,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
 
     // Skip updates for ogemath_fipi_bank table for fields that don't exist
     if (selectedTable === 'ogemath_fipi_bank') {
-      const allowedFields = ['problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image'];
+      const allowedFields = ['problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image', 'answer', 'problem_number_type', 'problem_link', 'comments'];
       if (!allowedFields.includes(selectedField)) {
         toast({
           title: "Update Not Supported",
@@ -74,11 +74,40 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         updateData.corrected = true;
       }
 
-      // Update in Supabase
-      const { error } = await supabase
-        .from(selectedTable)
-        .update(updateData)
-        .eq(selectedTable === 'ogemath_fipi_bank' ? 'problem_link' : 'question_id', currentProblem.question_id);
+      let error;
+      
+      // Update in Supabase with proper typing
+      if (selectedTable === 'ogemath_fipi_bank') {
+        const result = await supabase
+          .from('ogemath_fipi_bank')
+          .update(updateData)
+          .eq('problem_link', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'problems_oge_100') {
+        const result = await supabase
+          .from('problems_oge_100')
+          .update(updateData)
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'OGE_SHFIPI_problems_1_25') {
+        const result = await supabase
+          .from('OGE_SHFIPI_problems_1_25')
+          .update(updateData)
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'new_problems_by_skills_1') {
+        const result = await supabase
+          .from('new_problems_by_skills_1')
+          .update(updateData)
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'new_problems_by_skills_2') {
+        const result = await supabase
+          .from('new_problems_by_skills_2')
+          .update(updateData)
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      }
             
       if (error) {
         toast({
@@ -119,23 +148,40 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
     const newCheckedValue = !currentProblem.checked;
     
     try {
-      let updateData: any;
-      let whereClause: any;
+      let error;
       
       if (selectedTable === 'ogemath_fipi_bank') {
         // For ogemath_fipi_bank, convert boolean to number (0 or 1)
-        updateData = { checked: newCheckedValue ? 1 : 0 };
-        whereClause = { problem_link: currentProblem.question_id };
-      } else {
-        // For other tables, use boolean
-        updateData = { checked: newCheckedValue };
-        whereClause = { question_id: currentProblem.question_id };
+        const result = await supabase
+          .from('ogemath_fipi_bank')
+          .update({ checked: newCheckedValue ? 1 : 0 })
+          .eq('problem_link', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'problems_oge_100') {
+        const result = await supabase
+          .from('problems_oge_100')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'OGE_SHFIPI_problems_1_25') {
+        const result = await supabase
+          .from('OGE_SHFIPI_problems_1_25')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'new_problems_by_skills_1') {
+        const result = await supabase
+          .from('new_problems_by_skills_1')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'new_problems_by_skills_2') {
+        const result = await supabase
+          .from('new_problems_by_skills_2')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
       }
-      
-      const { error } = await supabase
-        .from(selectedTable)
-        .update(updateData)
-        .match(whereClause);
       
       if (error) {
         console.error('Error updating checked status:', error);
