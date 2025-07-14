@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { MathProblem } from '../types/mathProblem';
 
@@ -23,6 +25,10 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
   currentProblem,
   handleToggleChecked
 }) => {
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const navigateToNextProblem = () => {
     if (!problems.length) return;
     
@@ -39,6 +45,34 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
     if (currentIndex > 0) {
       setSelectedProblemId(problems[currentIndex - 1].question_id);
     }
+  };
+
+  const handlePasswordSubmit = () => {
+    if (password === 'sky1789') {
+      setIsPasswordDialogOpen(false);
+      setPassword('');
+      setPasswordError('');
+      handleExport();
+    } else {
+      setPasswordError('Incorrect password');
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    setPasswordError('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handlePasswordSubmit();
+    }
+  };
+
+  const openPasswordDialog = () => {
+    setIsPasswordDialogOpen(true);
+    setPassword('');
+    setPasswordError('');
   };
 
   return (
@@ -98,9 +132,47 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
             <Check className="h-4 w-4 mr-1" /> {currentProblem?.checked ? "Checked" : "Mark as Checked"}
           </Button>
           
-          <Button onClick={handleExport}>
-            Download CSV
-          </Button>
+          <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={openPasswordDialog}>
+                Download CSV
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Enter Password</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="password" className="text-right">
+                    Password:
+                  </label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    onKeyPress={handleKeyPress}
+                    className="col-span-3"
+                    placeholder="Enter password"
+                  />
+                </div>
+                {passwordError && (
+                  <div className="text-red-500 text-sm text-center">
+                    {passwordError}
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsPasswordDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handlePasswordSubmit}>
+                  Download
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
