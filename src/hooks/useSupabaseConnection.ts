@@ -9,8 +9,8 @@ export function useSupabaseConnection() {
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
-  const [availableTables, setAvailableTables] = useState<string[]>(['problems_oge_100', 'OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank']);
-  const [selectedTable, setSelectedTable] = useState<string>('problems_oge_100');
+  const [availableTables, setAvailableTables] = useState<string[]>(['OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank']);
+  const [selectedTable, setSelectedTable] = useState<string>('ogemath_fipi_bank');
 
   // Function to fetch problems from a specific table
   const fetchProblemsFromDatabase = async (tableName: string) => {
@@ -23,13 +23,6 @@ export function useSupabaseConnection() {
       if (tableName === 'ogemath_fipi_bank') {
         const result = await supabase
           .from('ogemath_fipi_bank')
-          .select('*')
-          .order('question_id', { ascending: true });
-        data = result.data;
-        error = result.error;
-      } else if (tableName === 'problems_oge_100') {
-        const result = await supabase
-          .from('problems_oge_100')
           .select('*')
           .order('question_id', { ascending: true });
         data = result.data;
@@ -144,7 +137,7 @@ export function useSupabaseConnection() {
       try {
         // Simple query to check connection
         const { error } = await supabase
-          .from('problems_oge_100')
+          .from('ogemath_fipi_bank')
           .select('question_id')
           .limit(1);
         
