@@ -111,7 +111,11 @@ export function useSupabaseConnection() {
               corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
               problem_number_type: item.problem_number_type?.toString() || "",
               problem_link: item.problem_link || "",
-              comments: item.comments || ""
+              comments: item.comments || "",
+              option1: item.option1 || "",
+              option2: item.option2 || "",
+              option3: item.option3 || "",
+              option4: item.option4 || "",
             };
           } else {
             // Handle other tables with standard schema

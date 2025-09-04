@@ -14,6 +14,11 @@ const ProblemDetails: React.FC<ProblemDetailsProps> = ({ currentProblem, onField
   const getFieldsToDisplay = () => {
     const baseFields = ['question_id', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded'];
     
+    // Add additional fields for math_skills_questions table with options
+    if (currentProblem.option1 !== undefined || currentProblem.option2 !== undefined || currentProblem.option3 !== undefined || currentProblem.option4 !== undefined) {
+      return ['question_id', 'number_id', 'problem_image', 'problem_text', 'option1', 'option2', 'option3', 'option4', 'answer', 'solution_text', 'solutiontextexpanded', 'code', 'difficulty', 'skills', 'problem_number_type', 'comments', 'problem_link'];
+    }
+    
     // Add additional fields for ogemath_fipi_bank table with problem_link right after question_id and comments after problem_link
     if (currentProblem.problem_link || currentProblem.problem_number_type || currentProblem.comments) {
       return ['question_id', 'problem_link', 'comments', 'problem_image', 'problem_text', 'answer', 'solution_text', 'solutiontextexpanded', 'problem_number_type', 'code', 'difficulty'];

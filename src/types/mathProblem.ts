@@ -15,6 +15,10 @@ export interface MathProblem {
   problem_number_type?: string;
   problem_link?: string;
   comments?: string;
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
 }
 
 export type FieldKey = keyof MathProblem;

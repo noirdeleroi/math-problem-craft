@@ -56,7 +56,7 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
 
     // Skip updates for math_skills_questions table for fields that don't exist
     if (selectedTable === 'math_skills_questions') {
-      const allowedFields = ['question_id', 'problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image', 'answer', 'code', 'difficulty', 'skills', 'problem_number_type', 'problem_link', 'comments'];
+      const allowedFields = ['question_id', 'problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image', 'answer', 'code', 'difficulty', 'skills', 'problem_number_type', 'problem_link', 'comments', 'option1', 'option2', 'option3', 'option4'];
       if (!allowedFields.includes(selectedField)) {
         toast({
           title: "Update Not Supported",
