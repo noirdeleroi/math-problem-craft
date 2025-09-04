@@ -98,6 +98,7 @@ export function useSupabaseConnection() {
             // Handle math_skills_questions table with specific schema
             return {
               question_id: item.question_id?.toString() || "",
+              number_id: item.number_id?.toString() || "",
               problem_text: item.problem_text || "",
               answer: item.answer || "",
               solution_text: item.solution_text || "",

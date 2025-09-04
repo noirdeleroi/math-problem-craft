@@ -15,6 +15,7 @@ interface ProblemNavigationProps {
   handleExport: () => void;
   currentProblem: MathProblem | null;
   handleToggleChecked: () => void;
+  selectedTable: string;
 }
 
 const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
@@ -23,7 +24,8 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
   setSelectedProblemId,
   handleExport,
   currentProblem,
-  handleToggleChecked
+  handleToggleChecked,
+  selectedTable
 }) => {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -98,16 +100,20 @@ const ProblemNavigation: React.FC<ProblemNavigationProps> = ({
               </SelectTrigger>
               <SelectContent className="max-h-[400px]">
                 <ScrollArea className="h-[400px] [&>div>div[style]]:!bg-black">
-                  {problems.map((problem) => (
-                    problem.question_id && problem.question_id.trim() !== "" ? (
+                  {problems.map((problem) => {
+                    // For math_skills_questions table, show number_id instead of question_id
+                    const displayValue = selectedTable === 'math_skills_questions' ? problem.number_id : problem.question_id;
+                    const keyValue = problem.question_id; // Always use question_id as the key for consistency
+                    
+                    return displayValue && displayValue.trim() !== "" ? (
                       <SelectItem 
-                        key={problem.question_id} 
-                        value={problem.question_id}
+                        key={keyValue} 
+                        value={keyValue}
                       >
-                        {problem.question_id}
+                        {displayValue}
                       </SelectItem>
-                    ) : null
-                  ))}
+                    ) : null;
+                  })}
                 </ScrollArea>
               </SelectContent>
             </Select>

@@ -82,6 +82,7 @@ const Index = () => {
           handleExport={handleExport}
           currentProblem={currentProblem}
           handleToggleChecked={handleToggleChecked}
+          selectedTable={selectedTable}
         />
       )}
       

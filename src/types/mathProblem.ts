@@ -1,6 +1,7 @@
 
 export interface MathProblem {
   question_id: string;
+  number_id?: string;
   problem_image?: string;
   problem_text: string;
   answer: string;
