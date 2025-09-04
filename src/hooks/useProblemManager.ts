@@ -54,6 +54,19 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
       }
     }
 
+    // Skip updates for math_skills_questions table for fields that don't exist
+    if (selectedTable === 'math_skills_questions') {
+      const allowedFields = ['question_id', 'problem_text', 'solution_text', 'solutiontextexpanded', 'problem_image', 'answer', 'code', 'difficulty', 'skills', 'problem_number_type', 'problem_link', 'comments'];
+      if (!allowedFields.includes(selectedField)) {
+        toast({
+          title: "Update Not Supported",
+          description: `Cannot update ${selectedField} for this table type.`,
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
     let updatedValue = editValue;
     // For boolean fields, convert string to boolean
     if (typeof currentProblem[selectedField] === 'boolean') {
@@ -104,6 +117,12 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
       } else if (selectedTable === 'new_problems_by_skills_2') {
         const result = await supabase
           .from('new_problems_by_skills_2')
+          .update(updateData)
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'math_skills_questions') {
+        const result = await supabase
+          .from('math_skills_questions' as any)
           .update(updateData)
           .eq('question_id', currentProblem.question_id);
         error = result.error;
@@ -178,6 +197,12 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
       } else if (selectedTable === 'new_problems_by_skills_2') {
         const result = await supabase
           .from('new_problems_by_skills_2')
+          .update({ checked: newCheckedValue })
+          .eq('question_id', currentProblem.question_id);
+        error = result.error;
+      } else if (selectedTable === 'math_skills_questions') {
+        const result = await supabase
+          .from('math_skills_questions' as any)
           .update({ checked: newCheckedValue })
           .eq('question_id', currentProblem.question_id);
         error = result.error;

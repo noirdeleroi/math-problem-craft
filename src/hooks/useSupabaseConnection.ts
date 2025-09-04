@@ -9,7 +9,7 @@ export function useSupabaseConnection() {
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
-  const [availableTables, setAvailableTables] = useState<string[]>(['OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank']);
+  const [availableTables, setAvailableTables] = useState<string[]>(['OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank', 'math_skills_questions']);
   const [selectedTable, setSelectedTable] = useState<string>('ogemath_fipi_bank');
 
   // Function to fetch problems from a specific table
@@ -48,6 +48,13 @@ export function useSupabaseConnection() {
           .order('question_id', { ascending: true });
         data = result.data;
         error = result.error;
+      } else if (tableName === 'math_skills_questions') {
+        const result = await supabase
+          .from('math_skills_questions' as any)
+          .select('*')
+          .order('number_id', { ascending: true });
+        data = result.data;
+        error = result.error;
       } else {
         console.error(`Unknown table: ${tableName}`);
         return;
@@ -81,6 +88,24 @@ export function useSupabaseConnection() {
               skills: item.problem_number_type?.toString() || "",
               code: "",
               difficulty: "",
+              checked: item.checked === 1 || item.checked === '1' || item.checked === true,
+              corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
+              problem_number_type: item.problem_number_type?.toString() || "",
+              problem_link: item.problem_link || "",
+              comments: item.comments || ""
+            };
+          } else if (tableName === 'math_skills_questions') {
+            // Handle math_skills_questions table with specific schema
+            return {
+              question_id: item.question_id?.toString() || "",
+              problem_text: item.problem_text || "",
+              answer: item.answer || "",
+              solution_text: item.solution_text || "",
+              problem_image: item.problem_image,
+              solutiontextexpanded: item.solutiontextexpanded,
+              skills: item.skills?.toString() || "",
+              code: item.code?.toString() || "",
+              difficulty: item.difficulty?.toString() || "",
               checked: item.checked === 1 || item.checked === '1' || item.checked === true,
               corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
               problem_number_type: item.problem_number_type?.toString() || "",
