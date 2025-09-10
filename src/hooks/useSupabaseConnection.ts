@@ -107,7 +107,7 @@ export function useSupabaseConnection() {
               skills: item.skills?.toString() || "",
               code: item.code?.toString() || "",
               difficulty: item.difficulty?.toString() || "",
-              checked: item.checked === 1 || item.checked === '1' || item.checked === true,
+              checked: Boolean(item.checked && (item.checked === 1 || item.checked === '1' || item.checked === true || item.checked === "true")),
               corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
               problem_number_type: item.problem_number_type?.toString() || "",
               problem_link: item.problem_link || "",
