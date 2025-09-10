@@ -96,6 +96,12 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
           .update(updateData)
           .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
+      } else if (selectedTable === 'egemathprof') {
+        const result = await supabase
+          .from('egemathprof' as any)
+          .update(updateData)
+          .eq('question_id', parseInt(currentProblem.question_id));
+        error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase
           .from('problems_oge_100')
@@ -173,6 +179,13 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         // For ogemath_fipi_bank, convert boolean to number (0 or 1)
         const result = await supabase
           .from('ogemath_fipi_bank')
+          .update({ checked: newCheckedValue ? "1" : "0" })
+          .eq('question_id', parseInt(currentProblem.question_id));
+        error = result.error;
+      } else if (selectedTable === 'egemathprof') {
+        // For egemathprof, convert boolean to string (1 or 0)
+        const result = await supabase
+          .from('egemathprof' as any)
           .update({ checked: newCheckedValue ? "1" : "0" })
           .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
