@@ -102,6 +102,12 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
           .update(updateData)
           .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;
+      } else if (selectedTable === 'egemathbase') {
+        const result = await supabase
+          .from('egemathbase' as any)
+          .update(updateData)
+          .eq('question_id', parseInt(currentProblem.question_id));
+        error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase
           .from('problems_oge_100')
@@ -186,6 +192,13 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         // For egemathprof, convert boolean to string (1 or 0)
         const result = await supabase
           .from('egemathprof' as any)
+          .update({ checked: newCheckedValue ? "1" : "0" })
+          .eq('question_id', parseInt(currentProblem.question_id));
+        error = result.error;
+      } else if (selectedTable === 'egemathbase') {
+        // For egemathbase, convert boolean to string (1 or 0)
+        const result = await supabase
+          .from('egemathbase' as any)
           .update({ checked: newCheckedValue ? "1" : "0" })
           .eq('question_id', parseInt(currentProblem.question_id));
         error = result.error;

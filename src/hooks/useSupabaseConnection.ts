@@ -9,7 +9,7 @@ export function useSupabaseConnection() {
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState<boolean>(true);
   const [problems, setProblems] = useState<MathProblem[]>([]);
-  const [availableTables, setAvailableTables] = useState<string[]>(['OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank', 'egemathprof', 'math_skills_questions']);
+  const [availableTables, setAvailableTables] = useState<string[]>(['OGE_SHFIPI_problems_1_25', 'new_problems_by_skills_1', 'new_problems_by_skills_2', 'ogemath_fipi_bank', 'egemathprof', 'egemathbase', 'math_skills_questions']);
   const [selectedTable, setSelectedTable] = useState<string>('ogemath_fipi_bank');
 
   // Function to fetch problems from a specific table
@@ -51,6 +51,13 @@ export function useSupabaseConnection() {
       } else if (tableName === 'egemathprof') {
         const result = await supabase
           .from('egemathprof' as any)
+          .select('*')
+          .order('question_id', { ascending: true });
+        data = result.data;
+        error = result.error;
+      } else if (tableName === 'egemathbase') {
+        const result = await supabase
+          .from('egemathbase' as any)
           .select('*')
           .order('question_id', { ascending: true });
         data = result.data;
@@ -113,6 +120,24 @@ export function useSupabaseConnection() {
               skills: item.problem_number_type?.toString() || "",
               code: item.code || "",
               difficulty: item.difficulty || "",
+              checked: item.checked === 1 || item.checked === '1' || item.checked === true,
+              corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
+              problem_number_type: item.problem_number_type?.toString() || "",
+              problem_link: item.problem_link || "",
+              comments: item.comments || ""
+            };
+          } else if (tableName === 'egemathbase') {
+            // Handle egemathbase table with similar schema to ogemath_fipi_bank
+            return {
+              question_id: item.question_id?.toString() || "",
+              problem_text: item.problem_text || "",
+              answer: item.answer || "",
+              solution_text: item.solution_text || "",
+              problem_image: item.problem_image,
+              solutiontextexpanded: item.solutiontextexpanded,
+              skills: item.problem_number_type?.toString() || "",
+              code: "",
+              difficulty: item.difficulty?.toString() || "",
               checked: item.checked === 1 || item.checked === '1' || item.checked === true,
               corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
               problem_number_type: item.problem_number_type?.toString() || "",
