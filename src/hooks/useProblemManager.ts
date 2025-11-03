@@ -110,25 +110,25 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase
-          .from('problems_oge_100')
+          .from('problems_oge_100' as any)
           .update(updateData)
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'OGE_SHFIPI_problems_1_25') {
         const result = await supabase
-          .from('OGE_SHFIPI_problems_1_25')
+          .from('OGE_SHFIPI_problems_1_25' as any)
           .update(updateData)
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'new_problems_by_skills_1') {
         const result = await supabase
-          .from('new_problems_by_skills_1')
+          .from('new_problems_by_skills_1' as any)
           .update(updateData)
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'new_problems_by_skills_2') {
         const result = await supabase
-          .from('new_problems_by_skills_2')
+          .from('new_problems_by_skills_2' as any)
           .update(updateData)
           .eq('question_id', currentProblem.question_id);
         error = result.error;
@@ -204,25 +204,25 @@ export function useProblemManager(problems: MathProblem[], selectedTable: string
         error = result.error;
       } else if (selectedTable === 'problems_oge_100') {
         const result = await supabase
-          .from('problems_oge_100')
+          .from('problems_oge_100' as any)
           .update({ checked: newCheckedValue })
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'OGE_SHFIPI_problems_1_25') {
         const result = await supabase
-          .from('OGE_SHFIPI_problems_1_25')
+          .from('OGE_SHFIPI_problems_1_25' as any)
           .update({ checked: newCheckedValue })
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'new_problems_by_skills_1') {
         const result = await supabase
-          .from('new_problems_by_skills_1')
+          .from('new_problems_by_skills_1' as any)
           .update({ checked: newCheckedValue })
           .eq('question_id', currentProblem.question_id);
         error = result.error;
       } else if (selectedTable === 'new_problems_by_skills_2') {
         const result = await supabase
-          .from('new_problems_by_skills_2')
+          .from('new_problems_by_skills_2' as any)
           .update({ checked: newCheckedValue })
           .eq('question_id', currentProblem.question_id);
         error = result.error;

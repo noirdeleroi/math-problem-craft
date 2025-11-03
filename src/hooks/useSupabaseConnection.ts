@@ -29,21 +29,21 @@ export function useSupabaseConnection() {
         error = result.error;
       } else if (tableName === 'OGE_SHFIPI_problems_1_25') {
         const result = await supabase
-          .from('OGE_SHFIPI_problems_1_25')
+          .from('OGE_SHFIPI_problems_1_25' as any)
           .select('*')
           .order('question_id', { ascending: true });
         data = result.data;
         error = result.error;
       } else if (tableName === 'new_problems_by_skills_1') {
         const result = await supabase
-          .from('new_problems_by_skills_1')
+          .from('new_problems_by_skills_1' as any)
           .select('*')
           .order('question_id', { ascending: true });
         data = result.data;
         error = result.error;
       } else if (tableName === 'new_problems_by_skills_2') {
         const result = await supabase
-          .from('new_problems_by_skills_2')
+          .from('new_problems_by_skills_2' as any)
           .select('*')
           .order('question_id', { ascending: true });
         data = result.data;
@@ -59,7 +59,8 @@ export function useSupabaseConnection() {
         const result = await supabase
           .from('egemathbase' as any)
           .select('*')
-          .order('question_id', { ascending: true });
+          .order('question_id', { ascending: true })
+          .limit(1000);
         data = result.data;
         error = result.error;
       } else if (tableName === 'math_skills_questions') {

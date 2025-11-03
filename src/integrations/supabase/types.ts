@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -227,599 +227,251 @@ export type Database = {
         }
         Relationships: []
       }
-      new_problems_by_skills_1: {
+      egemathbase: {
         Row: {
           answer: string | null
           calculation_required: string | null
           calculator_allowed: string | null
-          checked: boolean | null
-          code: string | null
-          corrected: boolean | null
+          checked: string | null
+          comments: string | null
+          corrected: string | null
           difficulty: number | null
+          fipi_id: string
           problem_image: string | null
-          problem_number: number | null
+          problem_link: string | null
+          problem_number_type: string | null
           problem_text: string | null
-          question_id: string
-          rec_time: string | null
-          skills: number | null
-          skills_for_step_1: string | null
-          skills_for_step_10: string | null
-          skills_for_step_11: string | null
-          skills_for_step_12: string | null
-          skills_for_step_13: string | null
-          skills_for_step_14: string | null
-          skills_for_step_15: string | null
-          skills_for_step_2: string | null
-          skills_for_step_3: string | null
-          skills_for_step_4: string | null
-          skills_for_step_5: string | null
-          skills_for_step_6: string | null
-          skills_for_step_7: string | null
-          skills_for_step_8: string | null
-          skills_for_step_9: string | null
-          solution_text: string | null
-          solutiontextexpanded: string | null
-          source: string | null
-          step1_expanded_text: string | null
-          step1_text: string | null
-          step10_expanded_text: string | null
-          step10_text: string | null
-          step11_expanded_text: string | null
-          step11_text: string | null
-          step12_expanded_text: string | null
-          step12_text: string | null
-          step13_expanded_text: string | null
-          step13_text: string | null
-          step14_expanded_text: string | null
-          step14_text: string | null
-          step15_expanded_text: string | null
-          step15_text: string | null
-          step2_expanded_text: string | null
-          step2_text: string | null
-          step3_expanded_text: string | null
-          step3_text: string | null
-          step4_expanded_text: string | null
-          step4_text: string | null
-          step5_expanded_text: string | null
-          step5_text: string | null
-          step6_expanded_text: string | null
-          step6_text: string | null
-          step7_expanded_text: string | null
-          step7_text: string | null
-          step8_expanded_text: string | null
-          step8_text: string | null
-          step9_expanded_text: string | null
-          step9_text: string | null
-          steps_number: number | null
-          type: string | null
-        }
-        Insert: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: string | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: number | null
-          problem_image?: string | null
-          problem_number?: number | null
-          problem_text?: string | null
-          question_id: string
-          rec_time?: string | null
-          skills?: number | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
-        }
-        Update: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: string | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: number | null
-          problem_image?: string | null
-          problem_number?: number | null
-          problem_text?: string | null
-          question_id?: string
-          rec_time?: string | null
-          skills?: number | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
-        }
-        Relationships: []
-      }
-      new_problems_by_skills_2: {
-        Row: {
-          answer: string | null
-          calculation_required: string | null
-          calculator_allowed: string | null
-          checked: boolean | null
-          code: string | null
-          corrected: boolean | null
-          difficulty: number | null
-          problem_image: string | null
-          problem_number: string | null
-          problem_text: string | null
-          question_id: string
-          rec_time: string | null
-          skills: number | null
-          skills_for_step_1: string | null
-          skills_for_step_10: string | null
-          skills_for_step_11: string | null
-          skills_for_step_12: string | null
-          skills_for_step_13: string | null
-          skills_for_step_14: string | null
-          skills_for_step_15: string | null
-          skills_for_step_2: string | null
-          skills_for_step_3: string | null
-          skills_for_step_4: string | null
-          skills_for_step_5: string | null
-          skills_for_step_6: string | null
-          skills_for_step_7: string | null
-          skills_for_step_8: string | null
-          skills_for_step_9: string | null
-          solution_text: string | null
-          solutiontextexpanded: string | null
-          source: string | null
-          step1_expanded_text: string | null
-          step1_text: string | null
-          step10_expanded_text: string | null
-          step10_text: string | null
-          step11_expanded_text: string | null
-          step11_text: string | null
-          step12_expanded_text: string | null
-          step12_text: string | null
-          step13_expanded_text: string | null
-          step13_text: string | null
-          step14_expanded_text: string | null
-          step14_text: string | null
-          step15_expanded_text: string | null
-          step15_text: string | null
-          step2_expanded_text: string | null
-          step2_text: string | null
-          step3_expanded_text: string | null
-          step3_text: string | null
-          step4_expanded_text: string | null
-          step4_text: string | null
-          step5_expanded_text: string | null
-          step5_text: string | null
-          step6_expanded_text: string | null
-          step6_text: string | null
-          step7_expanded_text: string | null
-          step7_text: string | null
-          step8_expanded_text: string | null
-          step8_text: string | null
-          step9_expanded_text: string | null
-          step9_text: string | null
-          steps_number: number | null
-          type: string | null
-        }
-        Insert: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: string | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: number | null
-          problem_image?: string | null
-          problem_number?: string | null
-          problem_text?: string | null
-          question_id: string
-          rec_time?: string | null
-          skills?: number | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
-        }
-        Update: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: string | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: number | null
-          problem_image?: string | null
-          problem_number?: string | null
-          problem_text?: string | null
-          question_id?: string
-          rec_time?: string | null
-          skills?: number | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
-        }
-        Relationships: []
-      }
-      OGE_SHFIPI_problems_1_25: {
-        Row: {
-          answer: string | null
-          calculation_required: string | null
-          calculator_allowed: boolean | null
-          checked: boolean | null
-          code: number | null
-          corrected: boolean | null
-          difficulty: string | null
-          problem_image: string | null
-          problem_number: string | null
-          problem_text: string | null
-          question_id: string
+          problem_text_latex: string | null
+          question_id: number
+          question_id_real: string
           rec_time: string | null
           skills: string | null
-          skills_for_step_1: string | null
-          skills_for_step_10: string | null
-          skills_for_step_11: string | null
-          skills_for_step_12: string | null
-          skills_for_step_13: string | null
-          skills_for_step_14: string | null
-          skills_for_step_15: string | null
-          skills_for_step_2: string | null
-          skills_for_step_3: string | null
-          skills_for_step_4: string | null
-          skills_for_step_5: string | null
-          skills_for_step_6: string | null
-          skills_for_step_7: string | null
-          skills_for_step_8: string | null
-          skills_for_step_9: string | null
+          solution_image: string | null
+          solution_text: string | null
+          solution_text_latex: string | null
+          solutiontextexpanded: string | null
+          source: string | null
+          steps_number: string | null
+          topics: string | null
+          type: string | null
+        }
+        Insert: {
+          answer?: string | null
+          calculation_required?: string | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          comments?: string | null
+          corrected?: string | null
+          difficulty?: number | null
+          fipi_id: string
+          problem_image?: string | null
+          problem_link?: string | null
+          problem_number_type?: string | null
+          problem_text?: string | null
+          problem_text_latex?: string | null
+          question_id: number
+          question_id_real: string
+          rec_time?: string | null
+          skills?: string | null
+          solution_image?: string | null
+          solution_text?: string | null
+          solution_text_latex?: string | null
+          solutiontextexpanded?: string | null
+          source?: string | null
+          steps_number?: string | null
+          topics?: string | null
+          type?: string | null
+        }
+        Update: {
+          answer?: string | null
+          calculation_required?: string | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          comments?: string | null
+          corrected?: string | null
+          difficulty?: number | null
+          fipi_id?: string
+          problem_image?: string | null
+          problem_link?: string | null
+          problem_number_type?: string | null
+          problem_text?: string | null
+          problem_text_latex?: string | null
+          question_id?: number
+          question_id_real?: string
+          rec_time?: string | null
+          skills?: string | null
+          solution_image?: string | null
+          solution_text?: string | null
+          solution_text_latex?: string | null
+          solutiontextexpanded?: string | null
+          source?: string | null
+          steps_number?: string | null
+          topics?: string | null
+          type?: string | null
+        }
+        Relationships: []
+      }
+      egemathprof: {
+        Row: {
+          answer: string | null
+          calculation_required: string | null
+          calculator_allowed: string | null
+          checked: string | null
+          code: string | null
+          comments: string | null
+          corrected: string | null
+          difficulty: string | null
+          fipi_id: string | null
+          problem_image: string | null
+          problem_link: string | null
+          problem_number_type: number | null
+          problem_text: string | null
+          question_id: number
+          question_id_1: string | null
+          rec_time: string | null
+          skills: string | null
           solution_image: string | null
           solution_text: string | null
           solutiontextexpanded: string | null
           source: string | null
-          step1_expanded_text: string | null
-          step1_text: string | null
-          step10_expanded_text: string | null
-          step10_text: string | null
-          step11_expanded_text: string | null
-          step11_text: string | null
-          step12_expanded_text: string | null
-          step12_text: string | null
-          step13_expanded_text: string | null
-          step13_text: string | null
-          step14_expanded_text: string | null
-          step14_text: string | null
-          step15_expanded_text: string | null
-          step15_text: string | null
-          step2_expanded_text: string | null
-          step2_text: string | null
-          step3_expanded_text: string | null
-          step3_text: string | null
-          step4_expanded_text: string | null
-          step4_text: string | null
-          step5_expanded_text: string | null
-          step5_text: string | null
-          step6_expanded_text: string | null
-          step6_text: string | null
-          step7_expanded_text: string | null
-          step7_text: string | null
-          step8_expanded_text: string | null
-          step8_text: string | null
-          step9_expanded_text: string | null
-          step9_text: string | null
-          steps_number: number | null
+          steps_number: string | null
           type: string | null
         }
         Insert: {
           answer?: string | null
           calculation_required?: string | null
-          calculator_allowed?: boolean | null
-          checked?: boolean | null
-          code?: number | null
-          corrected?: boolean | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          code?: string | null
+          comments?: string | null
+          corrected?: string | null
           difficulty?: string | null
+          fipi_id?: string | null
           problem_image?: string | null
-          problem_number?: string | null
+          problem_link?: string | null
+          problem_number_type?: number | null
           problem_text?: string | null
-          question_id: string
+          question_id: number
+          question_id_1?: string | null
           rec_time?: string | null
           skills?: string | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
           solution_image?: string | null
           solution_text?: string | null
           solutiontextexpanded?: string | null
           source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
+          steps_number?: string | null
           type?: string | null
         }
         Update: {
           answer?: string | null
           calculation_required?: string | null
-          calculator_allowed?: boolean | null
-          checked?: boolean | null
-          code?: number | null
-          corrected?: boolean | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          code?: string | null
+          comments?: string | null
+          corrected?: string | null
           difficulty?: string | null
+          fipi_id?: string | null
           problem_image?: string | null
-          problem_number?: string | null
+          problem_link?: string | null
+          problem_number_type?: number | null
           problem_text?: string | null
-          question_id?: string
+          question_id?: number
+          question_id_1?: string | null
           rec_time?: string | null
           skills?: string | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
           solution_image?: string | null
           solution_text?: string | null
           solutiontextexpanded?: string | null
           source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
+          steps_number?: string | null
+          type?: string | null
+        }
+        Relationships: []
+      }
+      math_skills_questions: {
+        Row: {
+          answer: string | null
+          calculation_required: string | null
+          calculator_allowed: string | null
+          checked: string | null
+          code: string | null
+          comments: string | null
+          corrected: string | null
+          difficulty: number | null
+          number_id: number
+          option1: string | null
+          option2: string | null
+          option3: string | null
+          option4: string | null
+          problem_image: string | null
+          problem_link: string | null
+          problem_number_type: string | null
+          problem_text: string | null
+          question_id: string | null
+          rec_time: string | null
+          skills: number | null
+          solution_image: string | null
+          solution_text: string | null
+          solutiontextexpanded: string | null
+          source: string | null
+          steps_number: string | null
+          type: string | null
+        }
+        Insert: {
+          answer?: string | null
+          calculation_required?: string | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          code?: string | null
+          comments?: string | null
+          corrected?: string | null
+          difficulty?: number | null
+          number_id: number
+          option1?: string | null
+          option2?: string | null
+          option3?: string | null
+          option4?: string | null
+          problem_image?: string | null
+          problem_link?: string | null
+          problem_number_type?: string | null
+          problem_text?: string | null
+          question_id?: string | null
+          rec_time?: string | null
+          skills?: number | null
+          solution_image?: string | null
+          solution_text?: string | null
+          solutiontextexpanded?: string | null
+          source?: string | null
+          steps_number?: string | null
+          type?: string | null
+        }
+        Update: {
+          answer?: string | null
+          calculation_required?: string | null
+          calculator_allowed?: string | null
+          checked?: string | null
+          code?: string | null
+          comments?: string | null
+          corrected?: string | null
+          difficulty?: number | null
+          number_id?: number
+          option1?: string | null
+          option2?: string | null
+          option3?: string | null
+          option4?: string | null
+          problem_image?: string | null
+          problem_link?: string | null
+          problem_number_type?: string | null
+          problem_text?: string | null
+          question_id?: string | null
+          rec_time?: string | null
+          skills?: number | null
+          solution_image?: string | null
+          solution_text?: string | null
+          solutiontextexpanded?: string | null
+          source?: string | null
+          steps_number?: string | null
           type?: string | null
         }
         Relationships: []
@@ -830,12 +482,16 @@ export type Database = {
           checked: string | null
           comments: string | null
           corrected: string | null
+          difficulty: number | null
+          fipi_id: string | null
           problem_image: string | null
           problem_link: string | null
           problem_number_type: number | null
           problem_text: string | null
+          problem_text_html: string | null
           question_id: number
           solution_text: string | null
+          solution_text_html: string | null
           solutiontextexpanded: string | null
         }
         Insert: {
@@ -843,12 +499,16 @@ export type Database = {
           checked?: string | null
           comments?: string | null
           corrected?: string | null
+          difficulty?: number | null
+          fipi_id?: string | null
           problem_image?: string | null
           problem_link?: string | null
           problem_number_type?: number | null
           problem_text?: string | null
+          problem_text_html?: string | null
           question_id: number
           solution_text?: string | null
+          solution_text_html?: string | null
           solutiontextexpanded?: string | null
         }
         Update: {
@@ -856,211 +516,17 @@ export type Database = {
           checked?: string | null
           comments?: string | null
           corrected?: string | null
+          difficulty?: number | null
+          fipi_id?: string | null
           problem_image?: string | null
           problem_link?: string | null
           problem_number_type?: number | null
           problem_text?: string | null
+          problem_text_html?: string | null
           question_id?: number
           solution_text?: string | null
+          solution_text_html?: string | null
           solutiontextexpanded?: string | null
-        }
-        Relationships: []
-      }
-      problems_oge_100: {
-        Row: {
-          answer: string | null
-          calculation_required: string | null
-          calculator_allowed: boolean | null
-          checked: boolean | null
-          code: string | null
-          corrected: boolean | null
-          difficulty: string | null
-          problem_image: string | null
-          problem_number: number | null
-          problem_text: string | null
-          question_id: string
-          rec_time: string | null
-          skills: string | null
-          skills_for_step_1: string | null
-          skills_for_step_10: string | null
-          skills_for_step_11: string | null
-          skills_for_step_12: string | null
-          skills_for_step_13: string | null
-          skills_for_step_14: string | null
-          skills_for_step_15: string | null
-          skills_for_step_2: string | null
-          skills_for_step_3: string | null
-          skills_for_step_4: string | null
-          skills_for_step_5: string | null
-          skills_for_step_6: string | null
-          skills_for_step_7: string | null
-          skills_for_step_8: string | null
-          skills_for_step_9: string | null
-          solution_text: string | null
-          solutiontextexpanded: string | null
-          source: string | null
-          step1_expanded_text: string | null
-          step1_text: string | null
-          step10_expanded_text: string | null
-          step10_text: string | null
-          step11_expanded_text: string | null
-          step11_text: string | null
-          step12_expanded_text: string | null
-          step12_text: string | null
-          step13_expanded_text: string | null
-          step13_text: string | null
-          step14_expanded_text: string | null
-          step14_text: string | null
-          step15_expanded_text: string | null
-          step15_text: string | null
-          step2_expanded_text: string | null
-          step2_text: string | null
-          step3_expanded_text: string | null
-          step3_text: string | null
-          step4_expanded_text: string | null
-          step4_text: string | null
-          step5_expanded_text: string | null
-          step5_text: string | null
-          step6_expanded_text: string | null
-          step6_text: string | null
-          step7_expanded_text: string | null
-          step7_text: string | null
-          step8_expanded_text: string | null
-          step8_text: string | null
-          step9_expanded_text: string | null
-          step9_text: string | null
-          steps_number: number | null
-          type: string | null
-        }
-        Insert: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: boolean | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: string | null
-          problem_image?: string | null
-          problem_number?: number | null
-          problem_text?: string | null
-          question_id: string
-          rec_time?: string | null
-          skills?: string | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
-        }
-        Update: {
-          answer?: string | null
-          calculation_required?: string | null
-          calculator_allowed?: boolean | null
-          checked?: boolean | null
-          code?: string | null
-          corrected?: boolean | null
-          difficulty?: string | null
-          problem_image?: string | null
-          problem_number?: number | null
-          problem_text?: string | null
-          question_id?: string
-          rec_time?: string | null
-          skills?: string | null
-          skills_for_step_1?: string | null
-          skills_for_step_10?: string | null
-          skills_for_step_11?: string | null
-          skills_for_step_12?: string | null
-          skills_for_step_13?: string | null
-          skills_for_step_14?: string | null
-          skills_for_step_15?: string | null
-          skills_for_step_2?: string | null
-          skills_for_step_3?: string | null
-          skills_for_step_4?: string | null
-          skills_for_step_5?: string | null
-          skills_for_step_6?: string | null
-          skills_for_step_7?: string | null
-          skills_for_step_8?: string | null
-          skills_for_step_9?: string | null
-          solution_text?: string | null
-          solutiontextexpanded?: string | null
-          source?: string | null
-          step1_expanded_text?: string | null
-          step1_text?: string | null
-          step10_expanded_text?: string | null
-          step10_text?: string | null
-          step11_expanded_text?: string | null
-          step11_text?: string | null
-          step12_expanded_text?: string | null
-          step12_text?: string | null
-          step13_expanded_text?: string | null
-          step13_text?: string | null
-          step14_expanded_text?: string | null
-          step14_text?: string | null
-          step15_expanded_text?: string | null
-          step15_text?: string | null
-          step2_expanded_text?: string | null
-          step2_text?: string | null
-          step3_expanded_text?: string | null
-          step3_text?: string | null
-          step4_expanded_text?: string | null
-          step4_text?: string | null
-          step5_expanded_text?: string | null
-          step5_text?: string | null
-          step6_expanded_text?: string | null
-          step6_text?: string | null
-          step7_expanded_text?: string | null
-          step7_text?: string | null
-          step8_expanded_text?: string | null
-          step8_text?: string | null
-          step9_expanded_text?: string | null
-          step9_text?: string | null
-          steps_number?: number | null
-          type?: string | null
         }
         Relationships: []
       }
