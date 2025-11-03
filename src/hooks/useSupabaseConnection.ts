@@ -59,6 +59,7 @@ export function useSupabaseConnection() {
         const result = await supabase
           .from('egemathbase' as any)
           .select('*')
+          .or('checked.is.null,checked.eq.')
           .order('question_id', { ascending: true })
           .limit(1000);
         data = result.data;
