@@ -60,8 +60,7 @@ export function useSupabaseConnection() {
           .from('egemathbase' as any)
           .select('*')
           .or('checked.is.null,checked.eq.')
-          .order('question_id', { ascending: true })
-          .limit(1000);
+          .order('question_id', { ascending: true });
         data = result.data;
         error = result.error;
       } else if (tableName === 'math_skills_questions') {
@@ -143,7 +142,7 @@ export function useSupabaseConnection() {
               checked: item.checked === 1 || item.checked === '1' || item.checked === true,
               corrected: item.corrected === 1 || item.corrected === '1' || item.corrected === true,
               problem_number_type: item.problem_number_type?.toString() || "",
-              problem_link: item.problem_link || "",
+              problem_link: item.link || "",
               comments: item.comments || ""
             };
           } else if (tableName === 'math_skills_questions') {
