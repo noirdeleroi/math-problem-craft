@@ -135,7 +135,6 @@ export function useSupabaseConnection() {
               answer: item.answer || "",
               solution_text: item.solution_text || "",
               problem_image: item.problem_image,
-              solutiontextexpanded: item.solutiontextexpanded,
               skills: item.problem_number_type?.toString() || "",
               code: "",
               difficulty: item.difficulty?.toString() || "",
